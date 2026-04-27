@@ -63,7 +63,7 @@ export function ArchivesPage() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "13px",
+              fontSize: "16px",
               color: "#aaa",
               fontStyle: "italic",
               marginBottom: "20px",
@@ -89,7 +89,7 @@ export function ArchivesPage() {
                   border: "none",
                   background: "transparent",
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   color: "#333",
                   outline: "none",
                 }}
@@ -100,7 +100,7 @@ export function ArchivesPage() {
               <select
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "12px",
+                  fontSize: "15px",
                   color: "#666",
                   border: "1px solid #e0e0e0",
                   borderRadius: "4px",
@@ -127,7 +127,7 @@ export function ArchivesPage() {
               onClick={() => setSelectedCategory(cat.id)}
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "12px",
+                fontSize: "15px",
                 fontWeight: selectedCategory === cat.id ? 500 : 400,
                 color:
                   selectedCategory === cat.id
@@ -163,7 +163,7 @@ export function ArchivesPage() {
         <p
           style={{
             fontFamily: "'Inter', sans-serif",
-            fontSize: "12px",
+            fontSize: "15px",
             color: "#bbb",
             marginBottom: "16px",
           }}
@@ -187,7 +187,7 @@ export function ArchivesPage() {
             <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "13px",
+                fontSize: "16px",
                 color: "#bbb",
                 marginTop: "8px",
               }}
@@ -217,7 +217,7 @@ export function ArchivesPage() {
                       <span
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "11px",
+                          fontSize: "14px",
                           color: "#ddd",
                           fontWeight: 400,
                         }}
@@ -232,7 +232,7 @@ export function ArchivesPage() {
                         <span
                           style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: "10px",
+                            fontSize: "13px",
                             fontWeight: 600,
                             color: article.categoryColor,
                             letterSpacing: "0.08em",
@@ -244,7 +244,7 @@ export function ArchivesPage() {
                         <span
                           style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: "10px",
+                            fontSize: "13px",
                             color: "#ddd",
                           }}
                         >
@@ -253,7 +253,7 @@ export function ArchivesPage() {
                         <span
                           style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: "10px",
+                            fontSize: "13px",
                             color: "#ccc",
                           }}
                         >
@@ -276,7 +276,7 @@ export function ArchivesPage() {
                       <p
                         style={{
                           fontFamily: "'EB Garamond', serif",
-                          fontSize: "14px",
+                          fontSize: "17px",
                           fontStyle: "italic",
                           color: "#aaa",
                           marginBottom: "8px",
@@ -287,7 +287,7 @@ export function ArchivesPage() {
                       <p
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "12px",
+                          fontSize: "15px",
                           color: "#888",
                           lineHeight: 1.6,
                           marginBottom: "10px",
@@ -300,7 +300,7 @@ export function ArchivesPage() {
                         <span
                           style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: "11px",
+                            fontSize: "14px",
                             color: "#555",
                             fontWeight: 500,
                           }}
@@ -310,7 +310,7 @@ export function ArchivesPage() {
                         <span
                           style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: "11px",
+                            fontSize: "14px",
                             color: "#ccc",
                           }}
                         >
@@ -324,7 +324,7 @@ export function ArchivesPage() {
                           <span
                             style={{
                               fontFamily: "'Inter', sans-serif",
-                              fontSize: "11px",
+                              fontSize: "14px",
                             }}
                           >
                             {article.date}
@@ -338,7 +338,7 @@ export function ArchivesPage() {
                           <span
                             style={{
                               fontFamily: "'Inter', sans-serif",
-                              fontSize: "11px",
+                              fontSize: "14px",
                             }}
                           >
                             {article.readTime}

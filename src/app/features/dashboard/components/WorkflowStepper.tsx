@@ -37,7 +37,7 @@ export function WorkflowStepper({ manuscript }: WorkflowStepperProps) {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "11px",
+                    fontSize: "14px",
                     fontFamily: "'Inter', sans-serif",
                     fontWeight: 700,
                     color: completed ? "#fff" : active ? "#fff" : "#ccc",
@@ -50,7 +50,7 @@ export function WorkflowStepper({ manuscript }: WorkflowStepperProps) {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "9px",
+                    fontSize: "12px",
                     marginTop: "6px",
                     color: active ? "#0b0b0b" : completed ? "#3ecf8e" : "#bbb",
                     textAlign: "center",

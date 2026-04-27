@@ -11,7 +11,7 @@ export function Footer() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "11px",
+              fontSize: "14px",
               color: "#888",
               letterSpacing: "0.05em",
               textTransform: "uppercase",
@@ -31,7 +31,7 @@ export function Footer() {
                 to={item.path}
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "11px",
+                  fontSize: "14px",
                   color: "#888",
                   letterSpacing: "0.05em",
                   textDecoration: "none",

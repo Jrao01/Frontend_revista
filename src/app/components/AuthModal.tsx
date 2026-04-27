@@ -109,7 +109,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
     border: "1px solid #e0e0e0",
     borderRadius: "4px",
     fontFamily: "'Inter', sans-serif",
-    fontSize: "13px",
+    fontSize: "16px",
     color: "#0b0b0b",
     outline: "none",
     background: "#fafafa",
@@ -119,7 +119,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
 
   const labelStyle: React.CSSProperties = {
     fontFamily: "'Inter', sans-serif",
-    fontSize: "11px",
+    fontSize: "14px",
     fontWeight: 500,
     color: "#555",
     textTransform: "uppercase",
@@ -156,7 +156,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 600, color: "#0b0b0b", marginBottom: "3px" }}>
                 {tab === "login" ? "Iniciar Sesión" : "Crear Cuenta"}
               </h2>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#888" }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>
                 {tab === "login" ? "Accede a CienciaEduc" : "Únete a la comunidad científica"}
               </p>
             </div>
@@ -167,7 +167,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
 
           {/* Demo quick-login */}
           <div style={{ background: "#f8f8f8", border: "1px solid #ebebeb", borderRadius: "6px", padding: "12px" }}>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: "#999", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "10px" }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "#999", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "10px" }}>
               Acceso Demo Rápido
             </p>
             <div className="grid grid-cols-2 gap-2">
@@ -193,13 +193,13 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
                   }}
                 >
                   <Icon size={13} color={color} />
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 500, color: "#333" }}>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 500, color: "#333" }}>
                     {label}
                   </span>
                 </button>
               ))}
             </div>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#bbb", marginTop: "8px", textAlign: "center" }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb", marginTop: "8px", textAlign: "center" }}>
               Contraseña demo: <span style={{ color: "#888", fontFamily: "monospace" }}>demo123</span>
             </p>
           </div>
@@ -212,7 +212,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
                 onClick={() => { setTab(t); setLoginError(""); setRegError(""); }}
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   fontWeight: tab === t ? 500 : 400,
                   color: tab === t ? "#0b0b0b" : "#888",
                   padding: "8px 0",
@@ -246,14 +246,14 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
               >
                 <Check size={26} color="#fff" strokeWidth={2.5} />
               </div>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#0b0b0b", fontWeight: 500 }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "17px", color: "#0b0b0b", fontWeight: 500 }}>
                 ¡Bienvenido, {successUser.name.split(" ")[0]}!
               </p>
               {successUser.role && (
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "11px",
+                    fontSize: "14px",
                     fontWeight: 600,
                     color: ROLE_CONFIG[successUser.role].color,
                     background: ROLE_CONFIG[successUser.role].bg,
@@ -299,7 +299,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
                 </div>
               </div>
               {loginError && (
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#c0392b" }}>{loginError}</p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#c0392b" }}>{loginError}</p>
               )}
               <button
                 type="submit"
@@ -309,7 +309,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
                   background: loading ? "#ccc" : "#0b0b0b",
                   color: "#fff",
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   fontWeight: 500,
                   border: "none",
                   cursor: loading ? "not-allowed" : "pointer",
@@ -319,7 +319,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
               >
                 {loading ? "Iniciando..." : "Iniciar Sesión"}
               </button>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#888", textAlign: "center" }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888", textAlign: "center" }}>
                 ¿No tienes cuenta?{" "}
                 <button
                   type="button"
@@ -367,17 +367,17 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
                 )}
               </div>
               {regError && (
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#c0392b" }}>{regError}</p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#c0392b" }}>{regError}</p>
               )}
               <button
                 type="submit"
                 disabled={loading}
                 className="w-full py-3 rounded"
-                style={{ background: loading ? "#ccc" : "#0b0b0b", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 500, border: "none", cursor: loading ? "not-allowed" : "pointer", transition: "background 0.2s", marginTop: "4px" }}
+                style={{ background: loading ? "#ccc" : "#0b0b0b", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 500, border: "none", cursor: loading ? "not-allowed" : "pointer", transition: "background 0.2s", marginTop: "4px" }}
               >
                 {loading ? "Creando cuenta..." : "Crear Cuenta"}
               </button>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#999", textAlign: "center" }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#999", textAlign: "center" }}>
                 Los nuevos registros obtienen rol de Investigador por defecto.
               </p>
             </form>

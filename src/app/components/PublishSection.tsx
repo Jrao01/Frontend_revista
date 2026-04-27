@@ -32,7 +32,7 @@ export function PublishSection() {
               <span
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   fontWeight: 600,
                   color: "#3ecf8e",
                   letterSpacing: "0.14em",
@@ -63,7 +63,7 @@ export function PublishSection() {
             <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "14px",
+                fontSize: "17px",
                 color: "rgba(255,255,255,0.45)",
                 lineHeight: 1.75,
                 marginBottom: "36px",
@@ -97,7 +97,7 @@ export function PublishSection() {
                   <span
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "13px",
+                      fontSize: "16px",
                       color: "rgba(255,255,255,0.55)",
                     }}
                   >
@@ -114,7 +114,7 @@ export function PublishSection() {
                 background: "#ffffff",
                 color: "#0b0b0b",
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "13px",
+                fontSize: "16px",
                 fontWeight: 600,
                 textDecoration: "none",
                 letterSpacing: "0.02em",
@@ -143,7 +143,7 @@ export function PublishSection() {
             <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "10px",
+                fontSize: "13px",
                 fontWeight: 600,
                 color: "rgba(255,255,255,0.3)",
                 letterSpacing: "0.12em",
@@ -179,7 +179,7 @@ export function PublishSection() {
                     <span
                       style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: "10px",
+                        fontSize: "13px",
                         fontWeight: 700,
                         color: item.color,
                         letterSpacing: "0.04em",
@@ -208,7 +208,7 @@ export function PublishSection() {
                     <p
                       style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: "13px",
+                        fontSize: "16px",
                         fontWeight: 500,
                         color: "#ffffff",
                       }}
@@ -218,7 +218,7 @@ export function PublishSection() {
                     <span
                       style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: "9px",
+                        fontSize: "12px",
                         color: item.color,
                         letterSpacing: "0.06em",
                         textTransform: "uppercase",
@@ -230,7 +230,7 @@ export function PublishSection() {
                   <p
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "12px",
+                      fontSize: "15px",
                       color: "rgba(255,255,255,0.35)",
                       lineHeight: 1.55,
                     }}

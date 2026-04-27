@@ -20,26 +20,26 @@ function ArticleCard({ article }: { article: Article }) {
           <img src={article.image} alt={article.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" style={{ opacity: 0.88 }} />
         </div>
         <div className="flex items-center gap-2 mb-3">
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 700, color: article.categoryColor, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 700, color: article.categoryColor, letterSpacing: "0.12em", textTransform: "uppercase" }}>
             {article.category}
           </span>
-          <span style={{ color: "#e0e0e0", fontSize: "10px" }}>·</span>
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 500, color: "#bbb", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <span style={{ color: "#e0e0e0", fontSize: "13px" }}>·</span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 500, color: "#bbb", letterSpacing: "0.06em", textTransform: "uppercase" }}>
             {article.type}
           </span>
         </div>
         <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "17px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.3, letterSpacing: "-0.01em", marginBottom: "8px", transition: "color 0.2s" }} className="group-hover:text-gray-600">
           {article.title}
         </h3>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#777", lineHeight: 1.65, marginBottom: "12px", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#777", lineHeight: 1.65, marginBottom: "12px", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
           {article.abstract}
         </p>
         <div className="flex items-center gap-3">
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa" }}>{article.authors[0].name.split(" ").slice(-1)[0]}, et al.</span>
-          <span style={{ color: "#ddd", fontSize: "10px" }}>·</span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>{article.authors[0].name.split(" ").slice(-1)[0]}, et al.</span>
+          <span style={{ color: "#ddd", fontSize: "13px" }}>·</span>
           <div className="flex items-center gap-1">
             <Clock size={10} color="#bbb" />
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa" }}>{article.readTime}</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>{article.readTime}</span>
           </div>
         </div>
       </article>
@@ -57,24 +57,24 @@ function FeaturedFeedCard({ article }: { article: Article }) {
         <div className="flex flex-col justify-center" style={{ padding: "28px 24px" }}>
           <div className="flex items-center gap-2 mb-3">
             <div style={{ width: "3px", height: "14px", background: article.categoryColor, borderRadius: "2px", flexShrink: 0 }} />
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 700, color: article.categoryColor, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 700, color: article.categoryColor, letterSpacing: "0.14em", textTransform: "uppercase" }}>
               {article.type}
             </span>
           </div>
           <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(16px, 2vw, 22px)", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.25, letterSpacing: "-0.02em", marginBottom: "10px" }}>
             {article.title}
           </h3>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#666", lineHeight: 1.65, marginBottom: "16px", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#666", lineHeight: 1.65, marginBottom: "16px", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
             {article.abstract}
           </p>
           <div className="flex items-center gap-3 flex-wrap">
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#999" }}>{article.authors[0].name}</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#999" }}>{article.authors[0].name}</span>
             <span style={{ color: "#ddd" }}>·</span>
             <div className="flex items-center gap-1">
               <BookOpen size={10} color="#bbb" />
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#999" }}>{article.readTime}</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#999" }}>{article.readTime}</span>
             </div>
-            <div className="flex items-center gap-1 ml-auto" style={{ color: article.categoryColor, fontFamily: "'Inter', sans-serif", fontSize: "11px", fontWeight: 500 }}>
+            <div className="flex items-center gap-1 ml-auto" style={{ color: article.categoryColor, fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 500 }}>
               Leer <ArrowRight size={11} />
             </div>
           </div>
@@ -168,7 +168,7 @@ export function InfiniteArticleFeed({ articles }: InfiniteArticleFeedProps) {
       {!hasMore && displayed.length > 0 && (
         <div className="text-center" style={{ marginTop: "48px", paddingTop: "28px", borderTop: "1px solid #f0f0f0" }}>
           <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "16px", fontStyle: "italic", color: "#bbb" }}>— Fin de las publicaciones disponibles —</p>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#ccc", marginTop: "6px", letterSpacing: "0.06em", textTransform: "uppercase" }}>Volumen 14 · CienciaEduc</p>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#ccc", marginTop: "6px", letterSpacing: "0.06em", textTransform: "uppercase" }}>Volumen 14 · CienciaEduc</p>
         </div>
       )}
     </div>

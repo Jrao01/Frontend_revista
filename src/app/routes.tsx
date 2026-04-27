@@ -25,10 +25,10 @@ function NotFound() {
         <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: 600, color: "#0b0b0b", marginBottom: "10px" }}>
           Página no encontrada
         </h1>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#888", marginBottom: "24px" }}>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "17px", color: "#888", marginBottom: "24px" }}>
           El contenido que buscas no existe o fue movido.
         </p>
-        <Link to="/" style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#0b0b0b", fontWeight: 500, textDecoration: "underline" }}>
+        <Link to="/" style={{ fontFamily: "'Inter', sans-serif", fontSize: "17px", color: "#0b0b0b", fontWeight: 500, textDecoration: "underline" }}>
           Volver al inicio
         </Link>
       </div>

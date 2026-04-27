@@ -25,7 +25,7 @@ export function PublishSection() {
           <div>
             <div className="flex items-center gap-2 mb-5">
               <div style={{ width: "28px", height: "1px", background: "#3ecf8e" }} />
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: "#3ecf8e", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "#3ecf8e", letterSpacing: "0.14em", textTransform: "uppercase" }}>
                 Convocatoria Abierta
               </span>
             </div>
@@ -35,7 +35,7 @@ export function PublishSection() {
               <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.65)" }}>CienciaEduc</span>
             </h2>
 
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", lineHeight: 1.75, marginBottom: "28px", maxWidth: "460px" }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "17px", color: "rgba(255,255,255,0.45)", lineHeight: 1.75, marginBottom: "28px", maxWidth: "460px" }}>
               La comunidad científica hispanohablante te espera. Compartimos investigación de excelencia con rigor editorial y acceso abierto.
             </p>
 
@@ -45,7 +45,7 @@ export function PublishSection() {
                   <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "rgba(62,207,142,0.1)", border: "1px solid rgba(62,207,142,0.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     <Icon size={13} color="#3ecf8e" />
                   </div>
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.55)" }}>{text}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "rgba(255,255,255,0.55)" }}>{text}</span>
                 </li>
               ))}
             </ul>
@@ -53,7 +53,7 @@ export function PublishSection() {
             <Link
               to="/publicar"
               className="inline-flex items-center gap-2 px-6 py-3 rounded"
-              style={{ background: "#ffffff", color: "#0b0b0b", fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, textDecoration: "none", transition: "background 0.2s" }}
+              style={{ background: "#ffffff", color: "#0b0b0b", fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 600, textDecoration: "none", transition: "background 0.2s" }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "#f0f0f0")}
               onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "#ffffff")}
             >
@@ -63,14 +63,14 @@ export function PublishSection() {
 
           {/* Right: process */}
           <div style={{ border: "1px solid rgba(255,255,255,0.07)", borderRadius: "8px", padding: "28px 32px", background: "rgba(255,255,255,0.02)" }}>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: "rgba(255,255,255,0.3)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "24px" }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "rgba(255,255,255,0.3)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "24px" }}>
               Proceso Editorial
             </p>
             {EDITORIAL_STEPS.map((item, i) => (
               <div key={i} className="flex gap-4" style={{ marginBottom: i < EDITORIAL_STEPS.length - 1 ? "18px" : 0 }}>
                 <div className="flex flex-col items-center" style={{ flexShrink: 0 }}>
                   <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: `${item.color}18`, border: `1px solid ${item.color}40`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 700, color: item.color, letterSpacing: "0.04em" }}>{item.step}</span>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: item.color, letterSpacing: "0.04em" }}>{item.step}</span>
                   </div>
                   {i < EDITORIAL_STEPS.length - 1 && (
                     <div style={{ width: "1px", flex: 1, minHeight: "14px", background: "rgba(255,255,255,0.08)", marginTop: "4px", marginBottom: "4px" }} />
@@ -78,10 +78,10 @@ export function PublishSection() {
                 </div>
                 <div>
                   <div className="flex items-center gap-3 mb-1">
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 500, color: "#ffffff" }}>{item.title}</p>
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: item.color, letterSpacing: "0.06em", textTransform: "uppercase" }}>{item.days}</span>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 500, color: "#ffffff" }}>{item.title}</p>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: item.color, letterSpacing: "0.06em", textTransform: "uppercase" }}>{item.days}</span>
                   </div>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.35)", lineHeight: 1.55 }}>{item.desc}</p>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.35)", lineHeight: 1.55 }}>{item.desc}</p>
                 </div>
               </div>
             ))}

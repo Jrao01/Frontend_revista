@@ -88,7 +88,7 @@ export function DashboardLayout({
                 width: "36px",
                 height: "36px",
                 background: roleConf?.color ?? "#3ecf8e",
-                fontSize: "13px",
+                fontSize: "16px",
                 fontWeight: 700,
                 color: "#fff",
                 fontFamily: "'Inter', sans-serif",
@@ -100,7 +100,7 @@ export function DashboardLayout({
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "12px",
+                  fontSize: "15px",
                   fontWeight: 500,
                   color: "#fff",
                   overflow: "hidden",
@@ -114,7 +114,7 @@ export function DashboardLayout({
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "9px",
+                    fontSize: "12px",
                     fontWeight: 600,
                     color: roleConf.color,
                     letterSpacing: "0.1em",
@@ -162,7 +162,7 @@ export function DashboardLayout({
               <span
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   fontWeight: isActive ? 500 : 400,
                   color: isActive ? "#fff" : "rgba(255,255,255,0.55)",
                   flex: 1,
@@ -174,7 +174,7 @@ export function DashboardLayout({
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "10px",
+                    fontSize: "13px",
                     fontWeight: 600,
                     color: "#fff",
                     background: roleConf?.color ?? "#3ecf8e",
@@ -205,7 +205,7 @@ export function DashboardLayout({
           onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
         >
           <ArrowLeft size={14} color="rgba(255,255,255,0.4)" />
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.45)" }}>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "rgba(255,255,255,0.45)" }}>
             Volver al sitio
           </span>
         </Link>
@@ -222,7 +222,7 @@ export function DashboardLayout({
           onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
         >
           <LogOut size={14} color="rgba(224,82,82,0.6)" />
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "rgba(224,82,82,0.7)" }}>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "rgba(224,82,82,0.7)" }}>
             Cerrar sesión
           </span>
         </button>
@@ -324,7 +324,7 @@ export function DashboardLayout({
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "12px",
+                    fontSize: "15px",
                     color: "#aaa",
                     marginTop: "1px",
                   }}
@@ -339,7 +339,7 @@ export function DashboardLayout({
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "10px",
+                fontSize: "13px",
                 fontWeight: 700,
                 color: roleConf.color,
                 background: roleConf.bg,

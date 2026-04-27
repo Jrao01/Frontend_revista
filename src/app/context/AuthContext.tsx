@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 
 export type UserRole = "investigador" | "editor" | "jurado" | "admin" | null;
 
@@ -90,8 +91,26 @@ export const ROLE_CONFIG = {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(() => {
+    const saved = localStorage.getItem("revista_auth");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
   const [authOpen, setAuthOpen] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("revista_auth", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("revista_auth");
+    }
+  }, [user]);
 
   const login = (profile: UserProfile) => {
     setUser(profile);

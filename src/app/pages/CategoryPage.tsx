@@ -63,7 +63,7 @@ export function CategoryPage() {
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "10px",
+                fontSize: "13px",
                 fontWeight: 600,
                 color: catInfo.color,
                 letterSpacing: "0.1em",
@@ -88,7 +88,7 @@ export function CategoryPage() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "14px",
+              fontSize: "17px",
               color: "#888",
             }}
           >
@@ -114,7 +114,7 @@ export function CategoryPage() {
               className="inline-flex items-center gap-1.5 mt-4"
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "13px",
+                fontSize: "16px",
                 color: "#555",
                 textDecoration: "none",
               }}
@@ -147,7 +147,7 @@ export function CategoryPage() {
                       <p
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "10px",
+                          fontSize: "13px",
                           fontWeight: 600,
                           color: catInfo.color,
                           letterSpacing: "0.08em",
@@ -173,7 +173,7 @@ export function CategoryPage() {
                       <p
                         style={{
                           fontFamily: "'EB Garamond', serif",
-                          fontSize: "15px",
+                          fontSize: "18px",
                           fontStyle: "italic",
                           color: "#999",
                           marginBottom: "12px",
@@ -184,7 +184,7 @@ export function CategoryPage() {
                       <p
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "13px",
+                          fontSize: "16px",
                           color: "#666",
                           lineHeight: 1.6,
                           marginBottom: "16px",
@@ -196,7 +196,7 @@ export function CategoryPage() {
                         <span
                           style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: "12px",
+                            fontSize: "15px",
                             color: "#555",
                             fontWeight: 500,
                           }}
@@ -207,7 +207,7 @@ export function CategoryPage() {
                         <span
                           style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: "12px",
+                            fontSize: "15px",
                             color: "#aaa",
                           }}
                         >
@@ -220,7 +220,7 @@ export function CategoryPage() {
                           <span
                             style={{
                               fontFamily: "'Inter', sans-serif",
-                              fontSize: "12px",
+                              fontSize: "15px",
                               fontWeight: 500,
                             }}
                           >
@@ -267,7 +267,7 @@ export function CategoryPage() {
                   <p
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "10px",
+                      fontSize: "13px",
                       fontWeight: 600,
                       color: catInfo.color,
                       letterSpacing: "0.08em",
@@ -293,7 +293,7 @@ export function CategoryPage() {
                   <p
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "12px",
+                      fontSize: "15px",
                       color: "#aaa",
                       lineHeight: 1.5,
                       marginBottom: "8px",
@@ -304,7 +304,7 @@ export function CategoryPage() {
                   <p
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "11px",
+                      fontSize: "14px",
                       color: "#bbb",
                     }}
                   >

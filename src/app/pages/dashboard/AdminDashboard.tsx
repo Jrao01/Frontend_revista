@@ -23,7 +23,7 @@ function StatusBadge({ status }: { status: ManuscriptStatus }) {
     <span
       style={{
         fontFamily: "'Inter', sans-serif",
-        fontSize: "10px",
+        fontSize: "13px",
         fontWeight: 600,
         color: conf.color,
         background: conf.bg,
@@ -47,7 +47,7 @@ function RoleBadge({ role }: { role: UserRole }) {
     <span
       style={{
         fontFamily: "'Inter', sans-serif",
-        fontSize: "10px",
+        fontSize: "13px",
         fontWeight: 600,
         color: conf.color,
         background: conf.bg,
@@ -144,10 +144,10 @@ export function AdminDashboard() {
                 <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: 600, color: kpi.color, lineHeight: 1, marginBottom: "6px" }}>
                   {kpi.value}
                 </p>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 500, color: "#444", marginBottom: "3px" }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 500, color: "#444", marginBottom: "3px" }}>
                   {kpi.label}
                 </p>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#bbb" }}>{kpi.sub}</p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>{kpi.sub}</p>
               </div>
             ))}
           </div>
@@ -162,7 +162,7 @@ export function AdminDashboard() {
                 <div key={role} style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "6px", padding: "20px" }}>
                   <div className="flex items-center gap-2 mb-3">
                     <Icon size={14} color={conf.color} />
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", fontWeight: 600, color: conf.color, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 600, color: conf.color, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                       {conf.label}
                     </span>
                   </div>
@@ -183,15 +183,15 @@ export function AdminDashboard() {
               <div key={m.id} className="flex items-center gap-4 py-3" style={{ borderBottom: "1px solid #f9f9f9" }}>
                 <StatusBadge status={m.status} />
                 <div className="flex-1 min-w-0">
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 500, color: "#333", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 500, color: "#333", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {m.title}
                   </p>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#bbb" }}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>
                     {m.submittedByName} · {m.submittedDate}
                   </p>
                 </div>
                 {m.timeline[m.timeline.length - 1] && (
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#bbb", flexShrink: 0 }}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb", flexShrink: 0 }}>
                     {m.timeline[m.timeline.length - 1].date}
                   </p>
                 )}
@@ -211,20 +211,20 @@ export function AdminDashboard() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <StatusBadge status={m.status} />
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#bbb" }}>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>
                         {m.id.toUpperCase()} · {m.category}
                       </span>
                     </div>
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.3, marginBottom: "4px" }}>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.3, marginBottom: "4px" }}>
                       {m.title}
                     </p>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#888" }}>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>
                       {m.submittedByName} — {m.institution} · {m.submittedDate}
                     </p>
                   </div>
                   <div className="flex gap-2 flex-shrink-0 flex-col items-end">
                     {m.assignedEditorName && (
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#6c8ebf" }}>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#6c8ebf" }}>
                         Ed: {m.assignedEditorName.split(" ")[0]}
                       </span>
                     )}
@@ -232,7 +232,7 @@ export function AdminDashboard() {
                       <button
                         onClick={() => updateStatus(m.id, "editor_review", user?.name ?? "Admin", "Admin", "Asignado por admin")}
                         className="px-3 py-1.5 rounded text-xs"
-                        style={{ background: "#6c8ebf20", border: "1px solid #6c8ebf40", color: "#6c8ebf", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "11px" }}
+                        style={{ background: "#6c8ebf20", border: "1px solid #6c8ebf40", color: "#6c8ebf", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "14px" }}
                       >
                         → Iniciar revisión
                       </button>
@@ -241,7 +241,7 @@ export function AdminDashboard() {
                       <button
                         onClick={() => updateStatus(m.id, "published", user?.name ?? "Admin", "Admin", "Publicado por admin")}
                         className="px-3 py-1.5 rounded text-xs"
-                        style={{ background: "#3ecf8e20", border: "1px solid #3ecf8e40", color: "#3ecf8e", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "11px" }}
+                        style={{ background: "#3ecf8e20", border: "1px solid #3ecf8e40", color: "#3ecf8e", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "14px" }}
                       >
                         → Publicar
                       </button>
@@ -249,7 +249,7 @@ export function AdminDashboard() {
                     {m.status === "published" && m.articleSlug && (
                       <Link
                         to={`/articulo/${m.articleSlug}`}
-                        style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#3ecf8e", textDecoration: "none" }}
+                        style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#3ecf8e", textDecoration: "none" }}
                       >
                         Ver artículo →
                       </Link>
@@ -274,7 +274,7 @@ export function AdminDashboard() {
                       key={h}
                       style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: "10px",
+                        fontSize: "13px",
                         fontWeight: 600,
                         color: "#888",
                         letterSpacing: "0.1em",
@@ -302,7 +302,7 @@ export function AdminDashboard() {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            fontSize: "11px",
+                            fontSize: "14px",
                             fontWeight: 700,
                             color: "#fff",
                             fontFamily: "'Inter', sans-serif",
@@ -311,25 +311,25 @@ export function AdminDashboard() {
                         >
                           {u.name.charAt(0)}
                         </div>
-                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#333", fontWeight: 500 }}>
+                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#333", fontWeight: 500 }}>
                           {u.name}
                         </span>
                       </div>
                     </td>
                     <td style={{ padding: "12px 16px" }}>
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#888" }}>{u.email}</span>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>{u.email}</span>
                     </td>
                     <td style={{ padding: "12px 16px" }}>
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#888" }}>{u.institution}</span>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>{u.institution}</span>
                     </td>
                     <td style={{ padding: "12px 16px" }}>
                       <RoleBadge role={u.role as UserRole} />
                     </td>
                     <td style={{ padding: "12px 16px" }}>
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#888" }}>{u.manuscripts}</span>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>{u.manuscripts}</span>
                     </td>
                     <td style={{ padding: "12px 16px" }}>
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#bbb" }}>{u.joined}</span>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#bbb" }}>{u.joined}</span>
                     </td>
                     <td style={{ padding: "12px 16px" }}>
                       <div className="relative">
@@ -338,7 +338,7 @@ export function AdminDashboard() {
                           className="flex items-center gap-1 px-3 py-1.5 rounded"
                           style={{
                             fontFamily: "'Inter', sans-serif",
-                            fontSize: "11px",
+                            fontSize: "14px",
                             color: "#555",
                             background: "#f5f5f5",
                             border: "1px solid #e8e8e8",
@@ -357,7 +357,7 @@ export function AdminDashboard() {
                                 key={role}
                                 onClick={() => handleRoleChange(u.id, role)}
                                 className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-2"
-                                style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: ROLE_CONFIG[role].color, border: "none", background: "none", cursor: "pointer" }}
+                                style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: ROLE_CONFIG[role].color, border: "none", background: "none", cursor: "pointer" }}
                               >
                                 {ROLE_CONFIG[role].label}
                               </button>
@@ -403,7 +403,7 @@ export function AdminDashboard() {
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie data={statusData} dataKey="value" cx="50%" cy="50%" outerRadius={75} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}
-                    style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px" }}
+                    style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px" }}
                   >
                     {statusData.map((_, i) => (
                       <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
@@ -462,7 +462,7 @@ export function AdminDashboard() {
               <div className="grid grid-cols-2 gap-4">
                 {section.fields.map((f) => (
                   <div key={f.label}>
-                    <label style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: "#888", textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "5px" }}>
+                    <label style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "#888", textTransform: "uppercase", letterSpacing: "0.08em", display: "block", marginBottom: "5px" }}>
                       {f.label}
                     </label>
                     <input
@@ -473,7 +473,7 @@ export function AdminDashboard() {
                         border: "1px solid #e8e8e8",
                         borderRadius: "4px",
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: "13px",
+                        fontSize: "16px",
                         color: "#333",
                         outline: "none",
                         background: "#fafafa",
@@ -485,7 +485,7 @@ export function AdminDashboard() {
               </div>
               <button
                 className="mt-4 px-5 py-2 rounded"
-                style={{ background: "#0b0b0b", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 500, border: "none", cursor: "pointer" }}
+                style={{ background: "#0b0b0b", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 500, border: "none", cursor: "pointer" }}
               >
                 Guardar cambios
               </button>

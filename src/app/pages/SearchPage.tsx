@@ -28,7 +28,7 @@ export function SearchPage() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "10px",
+              fontSize: "13px",
               color: "#bbb",
               textTransform: "uppercase",
               letterSpacing: "0.06em",
@@ -52,7 +52,7 @@ export function SearchPage() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "13px",
+              fontSize: "16px",
               color: "#bbb",
             }}
           >
@@ -76,7 +76,7 @@ export function SearchPage() {
             <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "13px",
+                fontSize: "16px",
                 color: "#bbb",
               }}
             >
@@ -87,7 +87,7 @@ export function SearchPage() {
               className="inline-flex items-center gap-1.5 mt-4"
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "13px",
+                fontSize: "16px",
                 color: "#555",
                 textDecoration: "none",
               }}
@@ -127,7 +127,7 @@ export function SearchPage() {
                       <span
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "10px",
+                          fontSize: "13px",
                           fontWeight: 600,
                           color: article.categoryColor,
                           letterSpacing: "0.08em",
@@ -140,7 +140,7 @@ export function SearchPage() {
                       <span
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "10px",
+                          fontSize: "13px",
                           color: "#ccc",
                         }}
                       >
@@ -164,7 +164,7 @@ export function SearchPage() {
                     <p
                       style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: "12px",
+                        fontSize: "15px",
                         color: "#aaa",
                         lineHeight: 1.6,
                         marginBottom: "6px",
@@ -176,7 +176,7 @@ export function SearchPage() {
                       <span
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "11px",
+                          fontSize: "14px",
                           color: "#555",
                           fontWeight: 500,
                         }}
@@ -187,7 +187,7 @@ export function SearchPage() {
                       <span
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "11px",
+                          fontSize: "14px",
                           color: "#bbb",
                         }}
                       >

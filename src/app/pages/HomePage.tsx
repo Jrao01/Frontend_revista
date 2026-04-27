@@ -63,7 +63,7 @@ export function HomePage() {
             <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "12px",
+                fontSize: "15px",
                 color: "#aaa",
                 marginTop: "2px",
                 fontStyle: "italic",
@@ -77,7 +77,7 @@ export function HomePage() {
             className="flex items-center gap-1.5"
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "12px",
+              fontSize: "15px",
               color: "#666",
               textDecoration: "none",
             }}
@@ -114,7 +114,7 @@ export function HomePage() {
                   <span
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "10px",
+                      fontSize: "13px",
                       fontWeight: 600,
                       color: featuredRecent.categoryColor,
                       letterSpacing: "0.08em",
@@ -143,7 +143,7 @@ export function HomePage() {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "13px",
+                    fontSize: "16px",
                     color: "#666",
                     lineHeight: 1.6,
                     flex: 1,
@@ -152,10 +152,10 @@ export function HomePage() {
                   {featuredRecent.abstract.slice(0, 160)}...
                 </p>
                 <div className="flex-shrink-0 text-right">
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa" }}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>
                     {featuredRecent.date}
                   </p>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa", marginTop: "2px" }}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa", marginTop: "2px" }}>
                     {featuredRecent.readTime}
                   </p>
                 </div>
@@ -187,7 +187,7 @@ export function HomePage() {
                     <p
                       style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: "10px",
+                        fontSize: "13px",
                         fontWeight: 600,
                         color: article.categoryColor,
                         letterSpacing: "0.08em",
@@ -200,7 +200,7 @@ export function HomePage() {
                     <h4
                       style={{
                         fontFamily: "'Playfair Display', serif",
-                        fontSize: "14px",
+                        fontSize: "17px",
                         fontWeight: 600,
                         color: "#0b0b0b",
                         lineHeight: 1.3,
@@ -210,7 +210,7 @@ export function HomePage() {
                     >
                       {article.title}
                     </h4>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#bbb" }}>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>
                       {article.date}
                     </p>
                   </div>
@@ -225,7 +225,7 @@ export function HomePage() {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "10px",
+                    fontSize: "13px",
                     fontWeight: 600,
                     color: "#666",
                     letterSpacing: "0.08em",
@@ -238,7 +238,7 @@ export function HomePage() {
               <p
                 style={{
                   fontFamily: "'EB Garamond', serif",
-                  fontSize: "12px",
+                  fontSize: "15px",
                   color: "#666",
                   lineHeight: 1.55,
                   marginBottom: "10px",
@@ -252,7 +252,7 @@ export function HomePage() {
                 className="flex items-center gap-2 px-3 py-1.5 rounded"
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "11px",
+                  fontSize: "14px",
                   color: "#333",
                   background: "#fff",
                   border: "1px solid #e0e0e0",
@@ -285,7 +285,7 @@ export function HomePage() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "12px",
+              fontSize: "15px",
               color: "#aaa",
               marginTop: "2px",
               fontStyle: "italic",
@@ -320,7 +320,7 @@ export function HomePage() {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "9px",
+                    fontSize: "12px",
                     fontWeight: 600,
                     color: editorialArticles[0].categoryColor,
                     letterSpacing: "0.1em",
@@ -343,7 +343,7 @@ export function HomePage() {
                 >
                   {editorialArticles[0].title}
                 </h3>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.45)" }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>
                   {editorialArticles[0].authors[0].name} · {editorialArticles[0].readTime}
                 </p>
               </div>
@@ -373,7 +373,7 @@ export function HomePage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   color: "#bbb",
                   letterSpacing: "0.05em",
                   textTransform: "uppercase",
@@ -403,7 +403,7 @@ export function HomePage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "9px",
+                  fontSize: "12px",
                   color: "rgba(255,255,255,0.35)",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
@@ -426,7 +426,7 @@ export function HomePage() {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "9px",
+                    fontSize: "12px",
                     fontWeight: 600,
                     color: editorialArticles[2].categoryColor,
                     letterSpacing: "0.08em",
@@ -439,7 +439,7 @@ export function HomePage() {
                 <h4
                   style={{
                     fontFamily: "'Playfair Display', serif",
-                    fontSize: "15px",
+                    fontSize: "18px",
                     fontWeight: 600,
                     color: "#0b0b0b",
                     lineHeight: 1.3,
@@ -449,7 +449,7 @@ export function HomePage() {
                 >
                   {editorialArticles[2].title}
                 </h4>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#999", lineHeight: 1.5 }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#999", lineHeight: 1.5 }}>
                   {editorialArticles[2].subtitle.slice(0, 80)}...
                 </p>
               </div>
@@ -477,7 +477,7 @@ export function HomePage() {
                   <p
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "9px",
+                      fontSize: "12px",
                       fontWeight: 600,
                       color: editorialArticles[1].categoryColor,
                       letterSpacing: "0.08em",
@@ -490,7 +490,7 @@ export function HomePage() {
                   <h5
                     style={{
                       fontFamily: "'Playfair Display', serif",
-                      fontSize: "13px",
+                      fontSize: "16px",
                       fontWeight: 600,
                       color: "#fff",
                       lineHeight: 1.3,
@@ -528,7 +528,7 @@ export function HomePage() {
                   <p
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "10px",
+                      fontSize: "13px",
                       fontWeight: 600,
                       color: article.categoryColor,
                       letterSpacing: "0.06em",
@@ -541,7 +541,7 @@ export function HomePage() {
                   <h4
                     style={{
                       fontFamily: "'Playfair Display', serif",
-                      fontSize: "14px",
+                      fontSize: "17px",
                       fontWeight: 600,
                       color: "#0b0b0b",
                       lineHeight: 1.3,
@@ -550,7 +550,7 @@ export function HomePage() {
                   >
                     {article.title}
                   </h4>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#bbb" }}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>
                     {article.readTime}
                   </p>
                 </div>
@@ -575,13 +575,13 @@ export function HomePage() {
             >
               Todas las Investigaciones
             </h2>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa", marginTop: "2px" }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa", marginTop: "2px" }}>
               {articles.length} artículos publicados · Volumen 14
             </p>
           </div>
           <div className="flex items-center gap-1.5">
             <Filter size={12} color="#aaa" />
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa" }}>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>
               Filtrar por disciplina
             </span>
           </div>
@@ -601,7 +601,7 @@ export function HomePage() {
               onClick={() => setActiveFeedCategory(cat.id)}
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "12px",
+                fontSize: "15px",
                 fontWeight: activeFeedCategory === cat.id ? 600 : 400,
                 color: activeFeedCategory === cat.id ? "#0b0b0b" : "#999",
                 background: activeFeedCategory === cat.id ? "#0b0b0b" : "transparent",
@@ -640,7 +640,7 @@ export function HomePage() {
               onClick={() => setActiveFeedCategory("all")}
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "12px",
+                fontSize: "15px",
                 color: "#666",
                 background: "none",
                 border: "1px solid #e0e0e0",
@@ -666,7 +666,7 @@ export function HomePage() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "10px",
+              fontSize: "13px",
               fontWeight: 600,
               color: "#0b0b0b",
               letterSpacing: "0.12em",
@@ -713,7 +713,7 @@ export function HomePage() {
                 <p
                   style={{
                     fontFamily: "'Playfair Display', serif",
-                    fontSize: "14px",
+                    fontSize: "17px",
                     fontWeight: 600,
                     color: "#0b0b0b",
                     marginBottom: "4px",
@@ -724,7 +724,7 @@ export function HomePage() {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "11px",
+                    fontSize: "14px",
                     color: "#bbb",
                   }}
                 >

@@ -43,7 +43,7 @@ export function DashboardPage() {
         <p
           style={{
             fontFamily: "'Inter', sans-serif",
-            fontSize: "13px",
+            fontSize: "16px",
             color: "rgba(255,255,255,0.4)",
           }}
         >

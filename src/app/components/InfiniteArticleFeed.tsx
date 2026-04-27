@@ -42,7 +42,7 @@ function ArticleCard({ article }: { article: Article }) {
           <span
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "9px",
+              fontSize: "12px",
               fontWeight: 700,
               color: article.categoryColor,
               letterSpacing: "0.12em",
@@ -51,11 +51,11 @@ function ArticleCard({ article }: { article: Article }) {
           >
             {article.category}
           </span>
-          <span style={{ color: "#e0e0e0", fontSize: "10px" }}>·</span>
+          <span style={{ color: "#e0e0e0", fontSize: "13px" }}>·</span>
           <span
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "9px",
+              fontSize: "12px",
               fontWeight: 500,
               color: "#bbb",
               letterSpacing: "0.06em",
@@ -87,7 +87,7 @@ function ArticleCard({ article }: { article: Article }) {
         <p
           style={{
             fontFamily: "'Inter', sans-serif",
-            fontSize: "12px",
+            fontSize: "15px",
             color: "#777",
             lineHeight: 1.65,
             marginBottom: "12px",
@@ -105,30 +105,30 @@ function ArticleCard({ article }: { article: Article }) {
           <span
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "11px",
+              fontSize: "14px",
               color: "#aaa",
             }}
           >
             {article.authors[0].name.split(" ").slice(-1)[0]}, et al.
           </span>
-          <span style={{ color: "#ddd", fontSize: "10px" }}>·</span>
+          <span style={{ color: "#ddd", fontSize: "13px" }}>·</span>
           <div className="flex items-center gap-1">
             <Clock size={10} color="#bbb" />
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "11px",
+                fontSize: "14px",
                 color: "#aaa",
               }}
             >
               {article.readTime}
             </span>
           </div>
-          <span style={{ color: "#ddd", fontSize: "10px" }}>·</span>
+          <span style={{ color: "#ddd", fontSize: "13px" }}>·</span>
           <span
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "11px",
+              fontSize: "14px",
               color: "#aaa",
             }}
           >
@@ -180,7 +180,7 @@ function FeaturedFeedCard({ article }: { article: Article }) {
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "9px",
+                fontSize: "12px",
                 fontWeight: 700,
                 color: article.categoryColor,
                 letterSpacing: "0.14em",
@@ -208,7 +208,7 @@ function FeaturedFeedCard({ article }: { article: Article }) {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "13px",
+              fontSize: "16px",
               color: "#666",
               lineHeight: 1.65,
               marginBottom: "18px",
@@ -225,7 +225,7 @@ function FeaturedFeedCard({ article }: { article: Article }) {
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "11px",
+                fontSize: "14px",
                 color: "#999",
               }}
             >
@@ -237,7 +237,7 @@ function FeaturedFeedCard({ article }: { article: Article }) {
               <span
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "11px",
+                  fontSize: "14px",
                   color: "#999",
                 }}
               >
@@ -249,7 +249,7 @@ function FeaturedFeedCard({ article }: { article: Article }) {
               style={{
                 color: article.categoryColor,
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "11px",
+                fontSize: "14px",
                 fontWeight: 500,
               }}
             >
@@ -434,7 +434,7 @@ export function InfiniteArticleFeed({ articles }: InfiniteArticleFeedProps) {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "11px",
+              fontSize: "14px",
               color: "#ccc",
               marginTop: "6px",
               letterSpacing: "0.06em",

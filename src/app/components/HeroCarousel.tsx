@@ -109,7 +109,7 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "10px",
+                    fontSize: "13px",
                     fontWeight: 600,
                     color: article.categoryColor,
                     letterSpacing: "0.14em",
@@ -121,7 +121,7 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "10px",
+                    fontSize: "13px",
                     color: "rgba(255,255,255,0.3)",
                     letterSpacing: "0.06em",
                   }}
@@ -149,7 +149,7 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   color: "rgba(255,255,255,0.48)",
                   lineHeight: 1.7,
                   marginBottom: "24px",
@@ -164,31 +164,31 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "12px",
+                    fontSize: "15px",
                     color: "rgba(255,255,255,0.42)",
                   }}
                 >
                   {article.authors[0].name}
                 </span>
-                <span style={{ color: "rgba(255,255,255,0.18)", fontSize: "11px" }}>
+                <span style={{ color: "rgba(255,255,255,0.18)", fontSize: "14px" }}>
                   ·
                 </span>
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "12px",
+                    fontSize: "15px",
                     color: "rgba(255,255,255,0.42)",
                   }}
                 >
                   {article.date}
                 </span>
-                <span style={{ color: "rgba(255,255,255,0.18)", fontSize: "11px" }}>
+                <span style={{ color: "rgba(255,255,255,0.18)", fontSize: "14px" }}>
                   ·
                 </span>
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "12px",
+                    fontSize: "15px",
                     color: "rgba(255,255,255,0.42)",
                   }}
                 >
@@ -199,7 +199,7 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
                   className="flex items-center gap-1.5 ml-1"
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "12px",
+                    fontSize: "15px",
                     color: article.categoryColor,
                     fontWeight: 500,
                     textDecoration: "none",
@@ -222,7 +222,7 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
         <span
           style={{
             fontFamily: "'Inter', sans-serif",
-            fontSize: "10px",
+            fontSize: "13px",
             color: "rgba(255,255,255,0.3)",
             letterSpacing: "0.1em",
           }}

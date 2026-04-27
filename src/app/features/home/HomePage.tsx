@@ -49,11 +49,11 @@ export function HomePage() {
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(20px, 2.5vw, 26px)", fontWeight: 600, color: "#0b0b0b", letterSpacing: "-0.01em" }}>
               Artículos Recientes
             </h2>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#aaa", marginTop: "2px", fontStyle: "italic" }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#aaa", marginTop: "2px", fontStyle: "italic" }}>
               Recent Publications
             </p>
           </div>
-          <Link to="/archivos" className="flex items-center gap-1.5" style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#666", textDecoration: "none" }}>
+          <Link to="/archivos" className="flex items-center gap-1.5" style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#666", textDecoration: "none" }}>
             Ver todos <ArrowRight size={13} />
           </Link>
         </div>
@@ -66,7 +66,7 @@ export function HomePage() {
                 <img src={featuredRecent.image} alt={featuredRecent.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" style={{ opacity: 0.82 }} />
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%)" }} />
                 <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5">
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: featuredRecent.categoryColor, letterSpacing: "0.08em", textTransform: "uppercase", display: "block", marginBottom: "5px" }}>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: featuredRecent.categoryColor, letterSpacing: "0.08em", textTransform: "uppercase", display: "block", marginBottom: "5px" }}>
                     {featuredRecent.category}
                   </span>
                   <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(17px, 2.2vw, 22px)", fontWeight: 600, color: "#fff", lineHeight: 1.25, letterSpacing: "-0.01em" }}>
@@ -75,12 +75,12 @@ export function HomePage() {
                 </div>
               </div>
               <div className="mt-3 flex items-start justify-between gap-4">
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#666", lineHeight: 1.6, flex: 1 }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#666", lineHeight: 1.6, flex: 1 }}>
                   {featuredRecent.abstract.slice(0, 160)}...
                 </p>
                 <div className="flex-shrink-0 text-right hidden md:block">
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa" }}>{featuredRecent.date}</p>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa", marginTop: "2px" }}>{featuredRecent.readTime}</p>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>{featuredRecent.date}</p>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa", marginTop: "2px" }}>{featuredRecent.readTime}</p>
                 </div>
               </div>
             </Link>
@@ -95,13 +95,13 @@ export function HomePage() {
                     <img src={article.image} alt={article.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: article.categoryColor, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "4px" }}>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: article.categoryColor, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "4px" }}>
                       {article.category}
                     </p>
-                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.3, marginBottom: "3px" }}>
+                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "17px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.3, marginBottom: "3px" }}>
                       {article.title}
                     </h4>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#bbb" }}>{article.date}</p>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>{article.date}</p>
                   </div>
                 </article>
               </Link>
@@ -110,16 +110,16 @@ export function HomePage() {
             <div className="rounded p-4" style={{ background: "#f8f8f8", border: "1px solid #ebebeb" }}>
               <div className="flex items-center gap-2 mb-3">
                 <div style={{ width: "6px", height: "6px", background: "#3ecf8e", borderRadius: "50%" }} />
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: "#666", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "#666", letterSpacing: "0.08em", textTransform: "uppercase" }}>
                   Herramienta de Cita
                 </p>
               </div>
-              <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "12px", color: "#666", lineHeight: 1.55, marginBottom: "10px", fontStyle: "italic" }}>
+              <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "15px", color: "#666", lineHeight: 1.55, marginBottom: "10px", fontStyle: "italic" }}>
                 Torres, E. (2024). La Simetría Oculta de las Redes Neuronales Celulares. CienciaEduc, 14(2), 42–62.
               </p>
               <button
                 className="flex items-center gap-2 px-3 py-1.5 rounded"
-                style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#333", background: "#fff", border: "1px solid #e0e0e0", cursor: "pointer" }}
+                style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#333", background: "#fff", border: "1px solid #e0e0e0", cursor: "pointer" }}
                 onClick={() => navigator.clipboard?.writeText("Torres, E. (2024). La Simetría Oculta de las Redes Neuronales Celulares. CienciaEduc, 14(2), 42–62.")}
               >
                 Copiar Cita
@@ -135,7 +135,7 @@ export function HomePage() {
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(20px, 2.5vw, 26px)", fontWeight: 600, color: "#0b0b0b", letterSpacing: "-0.01em" }}>
             Sugerencias Editoriales
           </h2>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#aaa", marginTop: "2px", fontStyle: "italic" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#aaa", marginTop: "2px", fontStyle: "italic" }}>
             Recent Discoveries
           </p>
         </div>
@@ -146,13 +146,13 @@ export function HomePage() {
               <img src={editorialArticles[0].image} alt={editorialArticles[0].title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" style={{ opacity: 0.6 }} />
               <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 55%)" }} />
               <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5">
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 600, color: editorialArticles[0].categoryColor, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "5px" }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 600, color: editorialArticles[0].categoryColor, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "5px" }}>
                   {editorialArticles[0].type}
                 </p>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(15px, 1.8vw, 19px)", fontWeight: 600, color: "#fff", lineHeight: 1.3, marginBottom: "6px" }}>
                   {editorialArticles[0].title}
                 </h3>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.45)" }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>
                   {editorialArticles[0].authors[0].name} · {editorialArticles[0].readTime}
                 </p>
               </div>
@@ -165,11 +165,11 @@ export function HomePage() {
               <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "17px", fontStyle: "italic", color: "#333", lineHeight: 1.5, marginBottom: "8px" }}>
                 La pedagogía moderna no puede sostenerse sobre la mera intuición; exige validación.
               </p>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#bbb", letterSpacing: "0.05em", textTransform: "uppercase" }}>EDITORIAL</p>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb", letterSpacing: "0.05em", textTransform: "uppercase" }}>EDITORIAL</p>
             </div>
             <div className="rounded p-5 flex flex-col justify-center" style={{ background: "#0b0b0b", minHeight: "120px" }}>
               <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "52px", fontWeight: 700, color: "#fff", lineHeight: 1, marginBottom: "8px" }}>84%</p>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: "rgba(255,255,255,0.35)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.5 }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.35)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.5 }}>
                 CORRELACIÓN EMPÍRICA CON NIVEL SOCIOECONÓMICO
               </p>
             </div>
@@ -178,13 +178,13 @@ export function HomePage() {
           <div className="md:col-span-3 flex flex-col gap-4">
             <Link to={`/articulo/${editorialArticles[2].slug}`} className="block group flex-1" style={{ textDecoration: "none" }}>
               <div className="rounded p-5 h-full" style={{ border: "1px solid #ebebeb", minHeight: "130px" }}>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 600, color: editorialArticles[2].categoryColor, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "7px" }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 600, color: editorialArticles[2].categoryColor, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "7px" }}>
                   {editorialArticles[2].type}
                 </p>
-                <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.3, marginBottom: "5px" }}>
+                <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.3, marginBottom: "5px" }}>
                   {editorialArticles[2].title}
                 </h4>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#999", lineHeight: 1.5 }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#999", lineHeight: 1.5 }}>
                   {editorialArticles[2].subtitle.slice(0, 80)}...
                 </p>
               </div>
@@ -193,10 +193,10 @@ export function HomePage() {
               <div className="relative rounded overflow-hidden" style={{ height: "120px", background: "#111" }}>
                 <img src={editorialArticles[1].image} alt={editorialArticles[1].title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" style={{ opacity: 0.7 }} />
                 <div className="absolute inset-0 p-4 flex flex-col justify-end" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%)" }}>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 600, color: editorialArticles[1].categoryColor, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "3px" }}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 600, color: editorialArticles[1].categoryColor, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "3px" }}>
                     {editorialArticles[1].type}
                   </p>
-                  <h5 style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: 600, color: "#fff", lineHeight: 1.3 }}>
+                  <h5 style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: 600, color: "#fff", lineHeight: 1.3 }}>
                     {editorialArticles[1].title}
                   </h5>
                 </div>
@@ -213,13 +213,13 @@ export function HomePage() {
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(18px, 2vw, 22px)", fontWeight: 600, color: "#0b0b0b", letterSpacing: "-0.01em" }}>
               Todas las Investigaciones
             </h2>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa", marginTop: "2px" }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa", marginTop: "2px" }}>
               {articles.length} artículos · Volumen 14
             </p>
           </div>
           <div className="flex items-center gap-1.5">
             <Filter size={12} color="#aaa" />
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa" }}>Filtrar por disciplina</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>Filtrar por disciplina</span>
           </div>
         </div>
       </div>
@@ -231,7 +231,7 @@ export function HomePage() {
               key={cat.id}
               onClick={() => setActiveFeedCategory(cat.id)}
               style={{
-                fontFamily: "'Inter', sans-serif", fontSize: "12px",
+                fontFamily: "'Inter', sans-serif", fontSize: "15px",
                 fontWeight: activeFeedCategory === cat.id ? 600 : 400,
                 color: activeFeedCategory === cat.id ? "#fff" : "#666",
                 background: activeFeedCategory === cat.id ? "#0b0b0b" : "transparent",
@@ -251,7 +251,7 @@ export function HomePage() {
             <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "20px", fontStyle: "italic", color: "#ccc", marginBottom: "8px" }}>
               No hay artículos en esta categoría aún.
             </p>
-            <button onClick={() => setActiveFeedCategory("all")} style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#666", background: "none", border: "1px solid #e0e0e0", borderRadius: "4px", padding: "8px 16px", cursor: "pointer", marginTop: "8px" }}>
+            <button onClick={() => setActiveFeedCategory("all")} style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#666", background: "none", border: "1px solid #e0e0e0", borderRadius: "4px", padding: "8px 16px", cursor: "pointer", marginTop: "8px" }}>
               Ver todos
             </button>
           </div>
@@ -264,7 +264,7 @@ export function HomePage() {
       <section className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-10">
         <div className="flex items-center gap-2 mb-5">
           <div style={{ width: "20px", height: "1px", background: "#0b0b0b" }} />
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: "#0b0b0b", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "#0b0b0b", letterSpacing: "0.12em", textTransform: "uppercase" }}>
             Explorar por Área
           </p>
         </div>
@@ -284,8 +284,8 @@ export function HomePage() {
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#f0f0f0"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
               >
                 <div style={{ width: "24px", height: "3px", background: cat.color, borderRadius: "2px", marginBottom: "10px" }} />
-                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: 600, color: "#0b0b0b", marginBottom: "3px" }}>{cat.label}</p>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#bbb" }}>{count} artículo{count !== 1 ? "s" : ""}</p>
+                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "17px", fontWeight: 600, color: "#0b0b0b", marginBottom: "3px" }}>{cat.label}</p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>{count} artículo{count !== 1 ? "s" : ""}</p>
               </Link>
             );
           })}

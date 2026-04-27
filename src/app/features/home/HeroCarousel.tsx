@@ -63,10 +63,10 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
             >
               <div className="flex items-center gap-2 mb-4 md:mb-5">
                 <div style={{ width: "3px", height: "16px", background: article.categoryColor, borderRadius: "2px", flexShrink: 0 }} />
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: article.categoryColor, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: article.categoryColor, letterSpacing: "0.14em", textTransform: "uppercase" }}>
                   {article.type}
                 </span>
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "rgba(255,255,255,0.3)", letterSpacing: "0.06em" }}>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.3)", letterSpacing: "0.06em" }}>
                   — {article.category}
                 </span>
               </div>
@@ -75,18 +75,18 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
                 {article.title}
               </h1>
 
-              <p className="hidden md:block" style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.48)", lineHeight: 1.7, marginBottom: "22px", maxWidth: "480px" }}>
+              <p className="hidden md:block" style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "rgba(255,255,255,0.48)", lineHeight: 1.7, marginBottom: "22px", maxWidth: "480px" }}>
                 {article.subtitle}
               </p>
 
               <div className="flex items-center gap-4 flex-wrap">
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.42)" }}>{article.authors[0].name}</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.42)" }}>{article.authors[0].name}</span>
                 <span style={{ color: "rgba(255,255,255,0.18)" }}>·</span>
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "rgba(255,255,255,0.42)" }}>{article.date}</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.42)" }}>{article.date}</span>
                 <Link
                   to={`/articulo/${article.slug}`}
                   className="flex items-center gap-1.5"
-                  style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: article.categoryColor, fontWeight: 500, textDecoration: "none" }}
+                  style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: article.categoryColor, fontWeight: 500, textDecoration: "none" }}
                 >
                   Leer artículo <ArrowRight size={12} />
                 </Link>
@@ -98,7 +98,7 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
 
       {/* Progress indicators */}
       <div className="absolute bottom-5 right-5 md:bottom-6 md:right-8 flex items-center gap-3" style={{ zIndex: 10 }}>
-        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "rgba(255,255,255,0.3)", letterSpacing: "0.1em" }}>
+        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.3)", letterSpacing: "0.1em" }}>
           {String(current + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
         </span>
         <div className="flex items-center gap-1.5">

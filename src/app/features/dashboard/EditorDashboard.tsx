@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   GitBranch, CheckSquare, ArrowLeft, Users, ChevronRight, Clock, MessageSquare, AlertTriangle, CheckCircle,
+  Book, FileUp, Percent
 } from "lucide-react";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { useAuth } from "../../context/AuthContext";
@@ -10,6 +11,11 @@ import { type Manuscript, type ManuscriptStatus, STATUS_CONFIG, NEXT_STATUS, ALL
 import { StatusBadge } from "./components/StatusBadge";
 
 const JURADO_POOL = ALL_USERS.filter((u) => u.role === "jurado");
+
+const MOCK_ISSUES = [
+  { id: "v12n1", volume: 12, number: 1, year: 2026, title: "Enero-Junio 2026", status: "publicado", articles: 5 },
+  { id: "v12n2", volume: 12, number: 2, year: 2026, title: "Julio-Diciembre 2026", status: "futuro", articles: 2 },
+];
 
 /* ─── List Item ────────────────────────────────────── */
 
@@ -39,31 +45,31 @@ function ManuscriptListItem({ manuscript, onClick }: { manuscript: Manuscript; o
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <StatusBadge status={manuscript.status} />
               {isNew && (
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", fontWeight: 700, color: "#fff", background: "#6c8ebf", padding: "2px 7px", borderRadius: "10px" }}>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 700, color: "#fff", background: "#6c8ebf", padding: "2px 7px", borderRadius: "10px" }}>
                   NUEVO
                 </span>
               )}
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#bbb" }}>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>
                 {manuscript.id.toUpperCase()} · {manuscript.category}
               </span>
             </div>
 
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.35, marginBottom: "8px", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.35, marginBottom: "8px", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
               {manuscript.title}
             </h3>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#888" }}>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#888" }}>
                 {manuscript.submittedByName}
               </span>
               <div className="flex items-center gap-1.5">
                 <Clock size={11} color="#ccc" />
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#bbb" }}>{manuscript.submittedDate}</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>{manuscript.submittedDate}</span>
               </div>
               {manuscript.assignedJurados.length > 0 && (
                 <div className="flex items-center gap-1">
                   <Users size={11} color="#bbb" />
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#bbb" }}>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>
                     {manuscript.assignedJurados.filter((j) => j.submitted).length}/{manuscript.assignedJurados.length}
                   </span>
                 </div>
@@ -73,7 +79,7 @@ function ManuscriptListItem({ manuscript, onClick }: { manuscript: Manuscript; o
             {pendingJurados > 0 && manuscript.status === "peer_review" && (
               <div className="flex items-center gap-2 mt-2 pt-2" style={{ borderTop: "1px solid #f5f5f5" }}>
                 <AlertTriangle size={11} color="#9b7fd4" />
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#9b7fd4" }}>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#9b7fd4" }}>
                   {pendingJurados} revisor{pendingJurados > 1 ? "es" : ""} pendiente{pendingJurados > 1 ? "s" : ""}
                 </span>
               </div>
@@ -137,7 +143,7 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
       <button
         onClick={onBack}
         className="flex items-center gap-2 mb-5"
-        style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#888", padding: 0 }}
+        style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#888", padding: 0 }}
         onMouseEnter={(e) => (e.currentTarget.style.color = "#0b0b0b")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
       >
@@ -148,7 +154,7 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
       <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
         <div className="flex items-center gap-2 mb-3 flex-wrap">
           <StatusBadge status={manuscript.status} />
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#bbb" }}>{manuscript.id.toUpperCase()} · {manuscript.category}</span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>{manuscript.id.toUpperCase()} · {manuscript.category}</span>
         </div>
         <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.3, marginBottom: "10px" }}>
           {manuscript.title}
@@ -160,40 +166,59 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
             { label: "Enviado", value: manuscript.submittedDate },
             { label: "Tipo", value: manuscript.type },
           ].map((item) => (
-            <span key={item.label} style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#888" }}>
+            <span key={item.label} style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>
               <strong style={{ color: "#555" }}>{item.label}:</strong> {item.value}
             </span>
           ))}
         </div>
         <div style={{ background: "#fafafa", border: "1px solid #f0f0f0", borderRadius: "6px", padding: "14px" }}>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 600, color: "#bbb", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "6px" }}>Resumen</p>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#555", lineHeight: 1.7 }}>{manuscript.abstract}</p>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "#bbb", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "6px" }}>Resumen</p>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#555", lineHeight: 1.7 }}>{manuscript.abstract}</p>
           <div className="flex flex-wrap gap-2 mt-2">
             {manuscript.keywords.map((kw) => (
-              <span key={kw} style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#888", background: "#efefef", padding: "2px 8px", borderRadius: "3px" }}>{kw}</span>
+              <span key={kw} style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#888", background: "#efefef", padding: "2px 8px", borderRadius: "3px" }}>{kw}</span>
             ))}
           </div>
         </div>
       </div>
 
+      {/* Anonimización */}
+      {manuscript.status === "editor_review" && (
+        <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "14px" }}>
+            Anonimización Técnica
+          </p>
+          <div className="flex items-center justify-between gap-4 p-4 rounded-lg" style={{ background: "#fafafa", border: "1px dashed #d0d0d0" }}>
+            <div>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 600, color: "#333" }}>Manuscrito para Doble Ciego</p>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#666" }}>Sube la versión sin nombres ni filiaciones antes de asignar jurados.</p>
+            </div>
+            <label style={{ background: "#0b0b0b", color: "#fff", padding: "8px 16px", borderRadius: "4px", fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 500, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              <input type="file" style={{ display: "none" }} />
+              <FileUp size={14} /> Subir versión anónima
+            </label>
+          </div>
+        </div>
+      )}
+
       {/* Jurados */}
       <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase" }}>
             Jurados ({manuscript.assignedJurados.length})
           </p>
           <div className="relative">
             <button
               onClick={() => setShowJuradoMenu(!showJuradoMenu)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded"
-              style={{ background: "#f5f5f5", border: "1px solid #e8e8e8", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#555" }}
+              style={{ background: "#f5f5f5", border: "1px solid #e8e8e8", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#555" }}
             >
               <Users size={12} /> + Asignar
             </button>
             {showJuradoMenu && (
               <div style={{ position: "absolute", right: 0, top: "34px", background: "#fff", border: "1px solid #e8e8e8", borderRadius: "6px", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", minWidth: "200px", zIndex: 50, overflow: "hidden" }}>
                 {availableJurados.length === 0 ? (
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#bbb", padding: "12px 14px" }}>Todos asignados</p>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#bbb", padding: "12px 14px" }}>Todos asignados</p>
                 ) : (
                   availableJurados.map((j) => (
                     <button
@@ -203,8 +228,8 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
                       onMouseEnter={(e) => (e.currentTarget.style.background = "#f9f9f9")}
                       onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
                     >
-                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#333", fontWeight: 500 }}>{j.name}</p>
-                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#aaa" }}>{j.institution}</p>
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#333", fontWeight: 500 }}>{j.name}</p>
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#aaa" }}>{j.institution}</p>
                     </button>
                   ))
                 )}
@@ -214,7 +239,7 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
         </div>
 
         {manuscript.assignedJurados.length === 0 ? (
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#ccc", fontStyle: "italic" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#ccc", fontStyle: "italic" }}>
             Sin jurados asignados. Asigna al menos 2 para revisión por pares.
           </p>
         ) : (
@@ -224,11 +249,11 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
                 <div className="flex items-center gap-3">
                   <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: j.submitted ? "#3ecf8e" : "#e8c55e" }} />
                   <div>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 500, color: "#333" }}>{j.name}</p>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#bbb" }}>{j.submitted ? "✓ Entregado" : "Pendiente"}</p>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 500, color: "#333" }}>{j.name}</p>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>{j.submitted ? "✓ Entregado" : "Pendiente"}</p>
                   </div>
                 </div>
-                <button onClick={() => removeJurado(manuscript.id, j.email)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#e05252", background: "none", border: "none", cursor: "pointer" }}>
+                <button onClick={() => removeJurado(manuscript.id, j.email)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#e05252", background: "none", border: "none", cursor: "pointer" }}>
                   Quitar
                 </button>
               </div>
@@ -239,7 +264,7 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
 
       {/* Timeline */}
       <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "18px" }}>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "18px" }}>
           Historial
         </p>
         {manuscript.timeline.map((entry, i) => {
@@ -253,19 +278,58 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
               <div style={{ paddingBottom: isLast ? 0 : "16px", flex: 1 }}>
                 <div className="flex items-center gap-2 flex-wrap mb-1">
                   <StatusBadge status={entry.status} size="sm" />
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#aaa" }}>{entry.date} · {entry.actor}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>{entry.date} · {entry.actor}</span>
                 </div>
-                {entry.note && <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#666", lineHeight: 1.6, marginTop: "3px" }}>{entry.note}</p>}
+                {entry.note && <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#666", lineHeight: 1.6, marginTop: "3px" }}>{entry.note}</p>}
               </div>
             </div>
           );
         })}
       </div>
 
+      {/* Editor Review (Desk Review) details */}
+      {manuscript.status === "editor_review" && (
+        <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
+          <div className="flex items-center justify-between mb-2">
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+              Desk Review & Plagio
+            </p>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#3ecf8e", fontWeight: 600, background: "rgba(62,207,142,0.1)", padding: "2px 6px", borderRadius: "4px" }}>Aceptable</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Percent size={18} color="#6c8ebf" />
+            </div>
+            <div>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "17px", fontWeight: 600, color: "#333" }}>14% de similitud detectada</p>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#888" }}>Reporte Turnitin generado automáticamente. Límite: 30%.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Producción y Galeradas */}
+      {manuscript.status === "accepted" && (
+        <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "14px" }}>
+            Producción y Galeradas
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {["PDF", "XML JATS", "HTML", "EPUB"].map((fmt) => (
+              <label key={fmt} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", padding: "16px", border: "1px dashed #d0d0d0", borderRadius: "6px", cursor: "pointer", background: "#fafafa", transition: "all 0.2s" }} onMouseEnter={(e) => e.currentTarget.style.borderColor = "#6c8ebf"} onMouseLeave={(e) => e.currentTarget.style.borderColor = "#d0d0d0"}>
+                <input type="file" style={{ display: "none" }} />
+                <FileUp size={18} color="#aaa" />
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 600, color: "#555" }}>Subir {fmt}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Comments */}
       {manuscript.comments.length > 0 && (
         <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "18px" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "18px" }}>
             Comentarios ({manuscript.comments.length})
           </p>
           <div className="flex flex-col gap-4">
@@ -274,13 +338,13 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
               return (
                 <div key={c.id} style={{ borderLeft: `3px solid ${accentColor}`, paddingLeft: "14px" }}>
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 600, color: "#333" }}>{c.author}</span>
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", color: "#bbb" }}>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 600, color: "#333" }}>{c.author}</span>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>
                       {c.role === "editor" ? "Editor" : c.role === "investigador" ? "Autor" : "Revisor"} · {c.date}
                     </span>
-                    {c.isPrivate && <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "9px", color: "#e07b54", background: "rgba(224,123,84,0.1)", padding: "1px 6px", borderRadius: "3px" }}>Privado</span>}
+                    {c.isPrivate && <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#e07b54", background: "rgba(224,123,84,0.1)", padding: "1px 6px", borderRadius: "3px" }}>Privado</span>}
                   </div>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#444", lineHeight: 1.7 }}>{c.content}</p>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#444", lineHeight: 1.7 }}>{c.content}</p>
                 </div>
               );
             })}
@@ -291,13 +355,13 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
       {/* Decision */}
       {nextStatuses.length > 0 && (
         <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px" }}>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "10px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "14px" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "14px" }}>
             Decisión editorial
           </p>
           {decisionSent ? (
             <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 p-3 rounded" style={{ background: "rgba(62,207,142,0.06)", border: "1px solid rgba(62,207,142,0.2)" }}>
               <CheckCircle size={14} color="#3ecf8e" />
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#3ecf8e" }}>Decisión: <strong>{decisionSent}</strong></span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#3ecf8e" }}>Decisión: <strong>{decisionSent}</strong></span>
             </motion.div>
           ) : (
             <>
@@ -305,7 +369,7 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
                 value={decisionNote}
                 onChange={(e) => setDecisionNote(e.target.value)}
                 placeholder="Nota para el autor (opcional)..."
-                style={{ width: "100%", minHeight: "72px", padding: "10px 12px", border: "1px solid #e8e8e8", borderRadius: "6px", fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#333", outline: "none", resize: "vertical", lineHeight: 1.6, marginBottom: "12px", boxSizing: "border-box", transition: "border-color 0.2s" }}
+                style={{ width: "100%", minHeight: "72px", padding: "10px 12px", border: "1px solid #e8e8e8", borderRadius: "6px", fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#333", outline: "none", resize: "vertical", lineHeight: 1.6, marginBottom: "12px", boxSizing: "border-box", transition: "border-color 0.2s" }}
                 onFocus={(e) => (e.target.style.borderColor = "#0b0b0b")}
                 onBlur={(e) => (e.target.style.borderColor = "#e8e8e8")}
               />
@@ -317,7 +381,7 @@ function ManuscriptDetail({ manuscript, onBack }: { manuscript: Manuscript; onBa
                       key={ns}
                       onClick={() => handleDecision(ns)}
                       className="px-3 py-2 rounded"
-                      style={{ background: colors.bg, border: `1px solid ${colors.border}`, color: colors.text, fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
+                      style={{ background: colors.bg, border: `1px solid ${colors.border}`, color: colors.text, fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
                     >
                       {statusActionLabels[ns] ?? STATUS_CONFIG[ns].label}
                     </button>
@@ -353,6 +417,7 @@ export function EditorDashboard() {
   const inboxCount = manuscripts.filter((m) => m.status === "submitted").length;
   const navItems = [
     { id: "manuscripts", label: "Manuscritos", icon: <GitBranch size={14} />, badge: inboxCount },
+    { id: "issues", label: "Volúmenes", icon: <Book size={14} /> },
     { id: "analytics", label: "Estadísticas", icon: <CheckSquare size={14} /> },
   ];
 
@@ -376,7 +441,7 @@ export function EditorDashboard() {
   return (
     <DashboardLayout
       navItems={navItems} activeSection={section} onSectionChange={handleSectionChange}
-      title={section === "manuscripts" ? (selectedManuscript ? "Gestión del manuscrito" : "Manuscritos") : "Estadísticas"}
+      title={section === "manuscripts" ? (selectedManuscript ? "Gestión del manuscrito" : "Manuscritos") : section === "issues" ? "Gestión de Volúmenes" : "Estadísticas"}
       subtitle={section === "manuscripts" && !selectedManuscript ? `${manuscripts.length} en total` : undefined}
     >
       <AnimatePresence mode="wait">
@@ -386,7 +451,7 @@ export function EditorDashboard() {
               {stats.map((s) => (
                 <div key={s.label} style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "16px 18px" }}>
                   <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: 600, color: s.color, lineHeight: 1, marginBottom: "4px" }}>{s.value}</p>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#888" }}>{s.label}</p>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#888" }}>{s.label}</p>
                 </div>
               ))}
             </div>
@@ -400,7 +465,7 @@ export function EditorDashboard() {
                     key={tab.id}
                     onClick={() => setFilterTab(tab.id)}
                     style={{
-                      fontFamily: "'Inter', sans-serif", fontSize: "12px", fontWeight: isActive ? 600 : 400,
+                      fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: isActive ? 600 : 400,
                       color: isActive ? "#fff" : "#666", background: isActive ? "#0b0b0b" : "transparent",
                       border: `1px solid ${isActive ? "#0b0b0b" : "#e0e0e0"}`, borderRadius: "20px",
                       padding: "4px 12px", cursor: "pointer", transition: "all 0.15s",
@@ -432,6 +497,41 @@ export function EditorDashboard() {
           <ManuscriptDetail key={`detail-${selectedManuscript.id}`} manuscript={selectedManuscript} onBack={() => setSelectedId(null)} />
         )}
 
+        {section === "issues" && (
+          <motion.div key="issues" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
+            <div className="flex justify-between items-center mb-5">
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#666" }}>Administra los números y volúmenes de la revista.</p>
+              <button style={{ background: "#0b0b0b", color: "#fff", border: "none", padding: "8px 16px", borderRadius: "4px", fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 500, cursor: "pointer" }}>
+                + Crear Volumen
+              </button>
+            </div>
+            
+            <div className="flex flex-col gap-3">
+              {MOCK_ISSUES.map((issue) => (
+                <div key={issue.id} style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#fff", background: issue.status === "publicado" ? "#3ecf8e" : "#e8c55e", padding: "2px 6px", borderRadius: "4px", textTransform: "uppercase" }}>
+                        {issue.status}
+                      </span>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888", fontWeight: 500 }}>Vol. {issue.volume}, Núm. {issue.number} ({issue.year})</span>
+                    </div>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: 600, color: "#0b0b0b" }}>{issue.title}</p>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#666", marginTop: "4px" }}>
+                      {issue.articles} artículos asignados
+                    </p>
+                  </div>
+                  <div>
+                    <button style={{ background: "#f5f5f5", color: "#333", border: "1px solid #e8e8e8", padding: "6px 12px", borderRadius: "4px", fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 500, cursor: "pointer" }}>
+                      Gestionar artículos
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
         {section === "analytics" && (
           <motion.div key="analytics" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -447,8 +547,8 @@ export function EditorDashboard() {
                     return (
                       <div key={key} style={{ marginBottom: "12px" }}>
                         <div className="flex items-center justify-between mb-1">
-                          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#555" }}>{label}</span>
-                          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#888" }}>{count as number} ({pct}%)</span>
+                          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#555" }}>{label}</span>
+                          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>{count as number} ({pct}%)</span>
                         </div>
                         <div style={{ height: "4px", background: "#f5f5f5", borderRadius: "3px", overflow: "hidden" }}>
                           <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.6 }} style={{ height: "100%", background: colorFn(key), borderRadius: "3px" }} />

@@ -37,7 +37,7 @@ export function AboutPage() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "10px",
+              fontSize: "13px",
               fontWeight: 600,
               color: "#3ecf8e",
               letterSpacing: "0.1em",
@@ -92,7 +92,7 @@ export function AboutPage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   fontWeight: 600,
                   color: "#888",
                   letterSpacing: "0.1em",
@@ -142,7 +142,7 @@ export function AboutPage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   fontWeight: 600,
                   color: "#888",
                   letterSpacing: "0.1em",
@@ -201,7 +201,7 @@ export function AboutPage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   color: "rgba(255,255,255,0.35)",
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
@@ -230,7 +230,7 @@ export function AboutPage() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "12px",
+              fontSize: "15px",
               color: "#aaa",
               fontStyle: "italic",
               marginBottom: "28px",
@@ -252,7 +252,7 @@ export function AboutPage() {
                   <span
                     style={{
                       fontFamily: "'Playfair Display', serif",
-                      fontSize: "15px",
+                      fontSize: "18px",
                       fontWeight: 600,
                       color: "#888",
                     }}
@@ -276,7 +276,7 @@ export function AboutPage() {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "11px",
+                    fontSize: "14px",
                     color: "#3ecf8e",
                     fontWeight: 500,
                     marginBottom: "4px",
@@ -287,7 +287,7 @@ export function AboutPage() {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "11px",
+                    fontSize: "14px",
                     color: "#aaa",
                     marginBottom: "2px",
                   }}
@@ -297,7 +297,7 @@ export function AboutPage() {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "11px",
+                    fontSize: "14px",
                     color: "#ccc",
                   }}
                 >
@@ -343,7 +343,7 @@ export function AboutPage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   fontWeight: 600,
                   color: "#aaa",
                   letterSpacing: "0.06em",
@@ -356,7 +356,7 @@ export function AboutPage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   color: "#444",
                 }}
               >

@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 import {
   type Manuscript,
   type ManuscriptStatus,
@@ -23,7 +24,32 @@ interface ManuscriptContextType {
 const ManuscriptContext = createContext<ManuscriptContextType>({} as ManuscriptContextType);
 
 export function ManuscriptProvider({ children }: { children: ReactNode }) {
-  const [manuscripts, setManuscripts] = useState<Manuscript[]>(getInitialManuscripts);
+  const [manuscripts, setManuscripts] = useState<Manuscript[]>(() => {
+    const saved = localStorage.getItem("revista_manuscripts");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map((m: any) => ({
+            ...m,
+            assignedJurados: m.assignedJurados || [],
+            comments: m.comments || [],
+            timeline: m.timeline || [],
+            coauthors: m.coauthors || [],
+            keywords: m.keywords || [],
+          }));
+        }
+        return getInitialManuscripts();
+      } catch (e) {
+        return getInitialManuscripts();
+      }
+    }
+    return getInitialManuscripts();
+  });
+
+  useEffect(() => {
+    localStorage.setItem("revista_manuscripts", JSON.stringify(manuscripts));
+  }, [manuscripts]);
 
   const updateStatus = (
     id: string,

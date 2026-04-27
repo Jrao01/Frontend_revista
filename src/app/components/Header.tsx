@@ -82,7 +82,7 @@ export function Header({ theme = "light" }: HeaderProps) {
                   to={item.path}
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "12px",
+                    fontSize: "15px",
                     fontWeight: 600,
                     color: isDark ? "#0b0b0b" : "#ffffff",
                     background: isDark ? "#3ecf8e" : "#0b0b0b",
@@ -104,7 +104,7 @@ export function Header({ theme = "light" }: HeaderProps) {
                 to={item.path}
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   fontWeight: isActive ? 500 : 400,
                   color:
                     isActive && isCategory && item.color
@@ -134,7 +134,7 @@ export function Header({ theme = "light" }: HeaderProps) {
           {/* Language toggle */}
           <div
             className="hidden md:flex items-center gap-1"
-            style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: isDark ? "rgba(255,255,255,0.5)" : "#aaa" }}
+            style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: isDark ? "rgba(255,255,255,0.5)" : "#aaa" }}
           >
             <span style={{ color: isDark ? "#ffffff" : "#0b0b0b", fontWeight: 500 }}>ES</span>
             <span style={{ margin: "0 2px" }}>|</span>
@@ -152,7 +152,7 @@ export function Header({ theme = "light" }: HeaderProps) {
                 placeholder="Buscar artículos..."
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   background: isDark ? "rgba(255,255,255,0.1)" : "#f5f5f5",
                   border: "none",
                   borderRadius: "4px",
@@ -190,7 +190,7 @@ export function Header({ theme = "light" }: HeaderProps) {
                 }}
               >
                 {isLoggedIn && user ? (
-                  <span style={{ fontSize: "11px", fontWeight: 700, color: "#fff", fontFamily: "'Inter', sans-serif" }}>
+                  <span style={{ fontSize: "14px", fontWeight: 700, color: "#fff", fontFamily: "'Inter', sans-serif" }}>
                     {user.name.charAt(0).toUpperCase()}
                   </span>
                 ) : (
@@ -205,7 +205,7 @@ export function Header({ theme = "light" }: HeaderProps) {
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "10px",
+                    fontSize: "13px",
                     fontWeight: 600,
                     color: roleConf.color,
                     letterSpacing: "0.06em",
@@ -231,17 +231,17 @@ export function Header({ theme = "light" }: HeaderProps) {
               >
                 {/* User info */}
                 <div className="px-4 py-3" style={{ borderBottom: "1px solid #f0f0f0" }}>
-                  <p style={{ fontSize: "13px", fontWeight: 600, color: "#0b0b0b", fontFamily: "'Inter', sans-serif", marginBottom: "2px" }}>
+                  <p style={{ fontSize: "16px", fontWeight: 600, color: "#0b0b0b", fontFamily: "'Inter', sans-serif", marginBottom: "2px" }}>
                     {user.name}
                   </p>
-                  <p style={{ fontSize: "11px", color: "#888", fontFamily: "'Inter', sans-serif", marginBottom: "4px" }}>
+                  <p style={{ fontSize: "14px", color: "#888", fontFamily: "'Inter', sans-serif", marginBottom: "4px" }}>
                     {user.email}
                   </p>
                   {roleConf && (
                     <span
                       style={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: "9px",
+                        fontSize: "12px",
                         fontWeight: 700,
                         color: roleConf.color,
                         background: roleConf.bg,
@@ -264,7 +264,7 @@ export function Header({ theme = "light" }: HeaderProps) {
                     className="flex items-center gap-2 px-4 py-2.5"
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "13px",
+                      fontSize: "16px",
                       color: "#333",
                       textDecoration: "none",
                       transition: "background 0.15s",
@@ -284,7 +284,7 @@ export function Header({ theme = "light" }: HeaderProps) {
                   className="flex items-center gap-2 w-full px-4 py-2.5"
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "13px",
+                    fontSize: "16px",
                     color: "#e05252",
                     background: "none",
                     border: "none",
@@ -323,7 +323,7 @@ export function Header({ theme = "light" }: HeaderProps) {
               className="block px-6 py-3"
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "14px",
+                fontSize: "17px",
                 color: isDark ? "#fff" : "#0b0b0b",
                 borderBottom: "1px solid",
                 borderColor: isDark ? "rgba(255,255,255,0.08)" : "#f0f0f0",
@@ -340,7 +340,7 @@ export function Header({ theme = "light" }: HeaderProps) {
               className="block px-6 py-3"
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "14px",
+                fontSize: "17px",
                 color: roleConf?.color ?? "#3ecf8e",
                 borderBottom: "1px solid",
                 borderColor: isDark ? "rgba(255,255,255,0.08)" : "#f0f0f0",
@@ -356,7 +356,7 @@ export function Header({ theme = "light" }: HeaderProps) {
               className="flex items-center gap-2 w-full px-6 py-3"
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "14px",
+                fontSize: "17px",
                 color: "#e05252",
                 background: "none",
                 border: "none",

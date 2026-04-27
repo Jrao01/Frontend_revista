@@ -39,7 +39,7 @@ export function ArticlePage() {
             to="/"
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "11px",
+              fontSize: "14px",
               color: "#aaa",
               textDecoration: "none",
               letterSpacing: "0.04em",
@@ -53,7 +53,7 @@ export function ArticlePage() {
             to={`/categoria/${article.category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "-")}`}
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "11px",
+              fontSize: "14px",
               color: "#aaa",
               textDecoration: "none",
               letterSpacing: "0.04em",
@@ -66,7 +66,7 @@ export function ArticlePage() {
           <span
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "11px",
+              fontSize: "14px",
               color: "#666",
               letterSpacing: "0.04em",
               textTransform: "uppercase",
@@ -119,7 +119,7 @@ export function ArticlePage() {
                     >
                       <span
                         style={{
-                          fontSize: "9px",
+                          fontSize: "12px",
                           color: article.categoryColor,
                           fontWeight: 700,
                           fontFamily: "'Inter', sans-serif",
@@ -134,7 +134,7 @@ export function ArticlePage() {
                       <p
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "12px",
+                          fontSize: "15px",
                           color: "#333",
                           fontWeight: 500,
                         }}
@@ -144,7 +144,7 @@ export function ArticlePage() {
                       <p
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "10px",
+                          fontSize: "13px",
                           color: "#aaa",
                         }}
                       >
@@ -158,7 +158,7 @@ export function ArticlePage() {
                   <span
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "12px",
+                      fontSize: "15px",
                       color: "#aaa",
                     }}
                   >
@@ -170,7 +170,7 @@ export function ArticlePage() {
                   <span
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "12px",
+                      fontSize: "15px",
                       color: "#aaa",
                     }}
                   >
@@ -182,7 +182,7 @@ export function ArticlePage() {
                   <span
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "12px",
+                      fontSize: "15px",
                       color: "#aaa",
                     }}
                   >
@@ -198,7 +198,7 @@ export function ArticlePage() {
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded"
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "12px",
+                    fontSize: "15px",
                     color: bookmarked ? article.categoryColor : "#555",
                     border: `1px solid ${bookmarked ? article.categoryColor : "#e0e0e0"}`,
                     background: bookmarked ? article.categoryColor + "11" : "#fff",
@@ -217,7 +217,7 @@ export function ArticlePage() {
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded"
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "12px",
+                    fontSize: "15px",
                     color: "#555",
                     border: "1px solid #e0e0e0",
                     background: "#fff",
@@ -245,7 +245,7 @@ export function ArticlePage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   fontWeight: 600,
                   color: "#aaa",
                   letterSpacing: "0.08em",
@@ -336,7 +336,7 @@ export function ArticlePage() {
                   <figcaption
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "11px",
+                      fontSize: "14px",
                       color: "#aaa",
                       marginTop: "10px",
                       lineHeight: 1.5,
@@ -353,7 +353,7 @@ export function ArticlePage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   fontWeight: 600,
                   color: "#aaa",
                   letterSpacing: "0.08em",
@@ -371,7 +371,7 @@ export function ArticlePage() {
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "11px",
+                      fontSize: "14px",
                       color: "#555",
                       background: "#f5f5f5",
                       border: "1px solid #e8e8e8",
@@ -398,7 +398,7 @@ export function ArticlePage() {
                 <p
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: "10px",
+                    fontSize: "13px",
                     fontWeight: 600,
                     color: "#666",
                     letterSpacing: "0.08em",
@@ -411,7 +411,7 @@ export function ArticlePage() {
               <p
                 style={{
                   fontFamily: "'EB Garamond', serif",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   color: "#666",
                   lineHeight: 1.65,
                   marginBottom: "12px",
@@ -425,7 +425,7 @@ export function ArticlePage() {
                 className="flex items-center gap-2 px-3 py-2 rounded w-full justify-center"
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "11px",
+                  fontSize: "14px",
                   color: copied ? "#3ecf8e" : "#333",
                   background: copied ? "#3ecf8e11" : "#fff",
                   border: `1px solid ${copied ? "#3ecf8e" : "#e0e0e0"}`,
@@ -444,7 +444,7 @@ export function ArticlePage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   fontWeight: 600,
                   color: "#666",
                   letterSpacing: "0.08em",
@@ -482,7 +482,7 @@ export function ArticlePage() {
                       <p
                         style={{
                           fontFamily: "'Inter', sans-serif",
-                          fontSize: "10px",
+                          fontSize: "13px",
                           fontWeight: 600,
                           color: rel.categoryColor,
                           textTransform: "uppercase",
@@ -495,7 +495,7 @@ export function ArticlePage() {
                       <h5
                         style={{
                           fontFamily: "'Playfair Display', serif",
-                          fontSize: "13px",
+                          fontSize: "16px",
                           fontWeight: 600,
                           color: "#0b0b0b",
                           lineHeight: 1.3,
@@ -514,7 +514,7 @@ export function ArticlePage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   fontWeight: 600,
                   color: "#666",
                   letterSpacing: "0.08em",
@@ -534,7 +534,7 @@ export function ArticlePage() {
                     className="px-3 py-1 rounded"
                     style={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: "11px",
+                      fontSize: "14px",
                       color: "#555",
                       background: "#f5f5f5",
                       border: "1px solid #eee",
@@ -563,7 +563,7 @@ export function ArticlePage() {
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "12px",
+                  fontSize: "15px",
                   color: "rgba(255,255,255,0.45)",
                   lineHeight: 1.5,
                   marginBottom: "12px",
@@ -581,7 +581,7 @@ export function ArticlePage() {
                   border: "1px solid rgba(255,255,255,0.12)",
                   borderRadius: "4px",
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "12px",
+                  fontSize: "15px",
                   color: "#fff",
                   outline: "none",
                   marginBottom: "8px",
@@ -591,7 +591,7 @@ export function ArticlePage() {
                 className="w-full py-2 rounded"
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "12px",
+                  fontSize: "15px",
                   fontWeight: 500,
                   color: "#0b0b0b",
                   background: "#3ecf8e",
