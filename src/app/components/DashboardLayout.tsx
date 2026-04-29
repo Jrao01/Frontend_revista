@@ -146,7 +146,6 @@ export function DashboardLayout({
                 cursor: "pointer",
                 transition: "all 0.15s",
                 border: "none",
-                borderLeft: isActive ? `2px solid ${roleConf?.color ?? "#3ecf8e"}` : "2px solid transparent",
               }}
             >
               {item.icon && (
