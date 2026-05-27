@@ -9,12 +9,10 @@ interface HeaderProps {
 
 const navItems = [
   { label: "Inicio", path: "/", color: undefined, highlight: false },
-  { label: "Archivos", path: "/archivos", color: undefined, highlight: false },
-  { label: "Biología", path: "/categoria/biologia", color: "#3ecf8e", highlight: false },
-  { label: "Física", path: "/categoria/fisica", color: "#9b7fd4", highlight: false },
-  { label: "Química", path: "/categoria/quimica", color: "#e8c55e", highlight: false },
+  { label: "Guía", path: "/guia", color: undefined, highlight: false },
+  { label: "Revistas", path: "/revistas", color: undefined, highlight: false },
+  { label: "Artículos", path: "/articulos", color: undefined, highlight: false },
   { label: "Acerca de", path: "/acerca", color: undefined, highlight: false },
-  { label: "Publicar", path: "/publicar", color: "#3ecf8e", highlight: true },
 ];
 
 export function Header({ theme = "light" }: HeaderProps) {
