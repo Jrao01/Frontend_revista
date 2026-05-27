@@ -8,6 +8,14 @@ import { CategoryPage } from "./features/category/CategoryPage";
 import { AboutPage } from "./features/about/AboutPage";
 import { SearchPage } from "./features/search/SearchPage";
 import { PublishPage } from "./features/publish/PublishPage";
+
+// ── New added pages ────────────────────────────────
+import { GuiaPage } from "./pages/GuiaPage";
+import { RevistasPage } from "./pages/RevistasPage";
+import { RevistaDetailPage } from "./pages/RevistaDetailPage";
+import { VolumeDetailPage } from "./pages/VolumeDetailPage";
+import { ArticulosPage } from "./pages/ArticulosPage";
+
 // ── Dashboard features ─────────────────────────────
 import { DashboardPage } from "./features/dashboard/DashboardPage";
 import { InvestigadorDashboard } from "./features/dashboard/InvestigadorDashboard";
@@ -48,6 +56,14 @@ export const router = createBrowserRouter([
       { path: "acerca", Component: AboutPage },
       { path: "buscar", Component: SearchPage },
       { path: "publicar", Component: PublishPage },
+      
+      // ── New Routes ──
+      { path: "guia", Component: GuiaPage },
+      { path: "articulos", Component: ArticulosPage },
+      { path: "revistas", Component: RevistasPage },
+      { path: "revistas/:id", Component: RevistaDetailPage },
+      { path: "revistas/:id/volumen/:volumeId", Component: VolumeDetailPage },
+
       // ── Dashboards (feature folder) ──
       { path: "dashboard", Component: DashboardPage },
       { path: "dashboard/investigador", Component: InvestigadorDashboard },

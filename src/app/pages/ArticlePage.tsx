@@ -1,22 +1,36 @@
 import { useParams, Link } from "react-router";
 import { useState } from "react";
-import { Calendar, Clock, FileText, Copy, Check, Tag, ChevronRight, BookOpen, Share2, Bookmark } from "lucide-react";
+import { Calendar, Clock, FileText, Copy, Check, Tag, ChevronRight, BookOpen, Share2, Bookmark, Download } from "lucide-react";
 import { articles } from "../data/articles";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { revistas } from "../data/revistas";
 
 export function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
   const article = articles.find((a) => a.slug === slug) || articles[7];
   const [copied, setCopied] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  // Dynamic journal lookup based on our revistas data structure
+  const journalInfo = (() => {
+    for (const r of revistas) {
+      for (const v of r.volumes) {
+        if (v.articleIds.includes(article.id)) {
+          return { revista: r, volume: v };
+        }
+      }
+    }
+    return null;
+  })();
 
   const citationText = `${article.authors.map(a => {
     const parts = a.name.replace(/^(Dr\.|Dra\.)\s/, "").split(" ");
     const lastName = parts[parts.length - 1];
     const initials = parts.slice(0, -1).map(n => n[0] + ".").join("");
     return `${lastName}, ${initials}`;
-  }).join("; ")} (2024). ${article.title}. Revista CienciaEduc, ${article.volume || "14"}(${article.issue || "2"}), ${article.pages || "1–20"}. https://doi.org/${article.doi}`;
+  }).join("; ")} (2024). ${article.title}. ${journalInfo ? journalInfo.revista.name : "Revista CienciaEduc"}, ${journalInfo ? journalInfo.volume.volumeNumber : (article.volume || "14")}(${journalInfo ? journalInfo.volume.issueNumber : (article.issue || "2")}), ${article.pages || "1–20"}. https://doi.org/${article.doi}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(citationText).catch(() => {});
@@ -388,6 +402,170 @@ export function ArticlePage() {
 
           {/* SIDEBAR */}
           <aside className="space-y-6">
+            {/* Publication details card */}
+            <div
+              className="rounded p-5"
+              style={{ border: "1px solid #e8e8e8", background: "#ffffff", boxShadow: "0 2px 10px rgba(0,0,0,0.02)" }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <BookOpen size={13} color="#aaa" />
+                <p
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    color: "#666",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Revista de Origen
+                </p>
+              </div>
+
+              {journalInfo ? (
+                <div>
+                  <h4
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      fontSize: "19px",
+                      fontWeight: 600,
+                      color: "#0b0b0b",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    {journalInfo.revista.name}
+                  </h4>
+                  <p
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: "14px",
+                      color: "#666",
+                      lineHeight: 1.5,
+                      marginBottom: "14px",
+                    }}
+                  >
+                    Volumen {journalInfo.volume.volumeNumber}, Número {journalInfo.volume.issueNumber} ({journalInfo.volume.publicationDate})
+                  </p>
+                  
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      fontFamily: "'Inter', sans-serif",
+                      color: "#888",
+                      borderTop: "1px solid #eee",
+                      paddingTop: "10px",
+                      marginBottom: "16px",
+                    }}
+                  >
+                    <div className="flex justify-between pb-1.5">
+                      <span>ISSN:</span>
+                      <strong style={{ color: "#333" }}>{journalInfo.revista.issn}</strong>
+                    </div>
+                    <div className="flex justify-between pb-1.5">
+                      <span>Páginas:</span>
+                      <strong style={{ color: "#333" }}>{article.pages || "N/A"}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Periodicidad:</span>
+                      <strong style={{ color: "#333" }}>{journalInfo.revista.periodicity}</strong>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-4">
+                  <h4
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      fontSize: "19px",
+                      fontWeight: 600,
+                      color: "#0b0b0b",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    CienciaEduc (General)
+                  </h4>
+                  <p
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: "14px",
+                      color: "#666",
+                      marginBottom: "14px",
+                    }}
+                  >
+                    Volumen {article.volume || "14"}, Número {article.issue || "2"} ({article.date})
+                  </p>
+                  
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      fontFamily: "'Inter', sans-serif",
+                      color: "#888",
+                      borderTop: "1px solid #eee",
+                      paddingTop: "10px",
+                      marginBottom: "16px",
+                    }}
+                  >
+                    <div className="flex justify-between pb-1.5">
+                      <span>Páginas:</span>
+                      <strong style={{ color: "#333" }}>{article.pages || "1-20"}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>DOI:</span>
+                      <strong style={{ color: "#333" }}>{article.doi}</strong>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* View/Download PDF Button */}
+              <button
+                onClick={() => {
+                  setDownloading(true);
+                  setTimeout(() => {
+                    setDownloading(false);
+                    const element = document.createElement("a");
+                    const file = new Blob([
+                      `REVISTA CIENTÍFICA: ${journalInfo ? journalInfo.revista.name : "CienciaEduc"}\n` +
+                      `Volumen: ${journalInfo ? journalInfo.volume.volumeNumber : (article.volume || "14")}\n` +
+                      `Número: ${journalInfo ? journalInfo.volume.issueNumber : (article.issue || "2")}\n` +
+                      `ISSN: ${journalInfo ? journalInfo.revista.issn : "2443-4256"}\n` +
+                      `Páginas: ${article.pages || "1-20"}\n` +
+                      `DOI: ${article.doi}\n\n` +
+                      `TÍTULO: ${article.title}\n` +
+                      `SUBTÍTULO: ${article.subtitle}\n` +
+                      `AUTORES: ${article.authors.map(a => `${a.name} (${a.institution})`).join(", ")}\n\n` +
+                      `RESUMEN:\n${article.abstract}\n\n` +
+                      `SECCIONES:\n` +
+                      `${article.sections?.map(s => `--- ${s.title} ---\n${s.content}`).join("\n\n")}`
+                    ], {type: 'text/plain'});
+                    element.href = URL.createObjectURL(file);
+                    element.download = `${article.slug}_completo.txt`;
+                    document.body.appendChild(element);
+                    element.click();
+                    document.body.removeChild(element);
+                  }, 1200);
+                }}
+                disabled={downloading}
+                className="flex items-center gap-2 px-3 py-2.5 rounded w-full justify-center"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "14px",
+                  color: "#0b0b0b",
+                  background: "#3ecf8e",
+                  border: "none",
+                  cursor: downloading ? "not-allowed" : "pointer",
+                  fontWeight: 600,
+                  transition: "opacity 0.2s",
+                }}
+                onMouseEnter={(e) => { if(!downloading) e.currentTarget.style.opacity = "0.9"; }}
+                onMouseLeave={(e) => { if(!downloading) e.currentTarget.style.opacity = "1"; }}
+              >
+                <Download size={14} />
+                {downloading ? "Preparando PDF..." : "Descargar PDF Completo"}
+              </button>
+            </div>
+
             {/* Citation box */}
             <div
               className="rounded p-5"
