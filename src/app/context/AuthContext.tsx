@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 
-export type UserRole = "investigador" | "editor" | "jurado" | "admin" | null;
+export type UserRole = "investigador" | "editor" | "revisor" | "admin" | null;
 
 export interface UserProfile {
   name: string;
@@ -16,8 +16,9 @@ interface AuthContextType {
   user: UserProfile | null;
   userName?: string;
   userRole: UserRole;
+  token: string | null;
   openAuth: () => void;
-  login: (user: UserProfile) => void;
+  login: (user: UserProfile, token?: string) => void;
   logout: () => void;
   authOpen: boolean;
   closeAuth: () => void;
@@ -28,6 +29,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   userName: undefined,
   userRole: null,
+  token: null,
   openAuth: () => {},
   login: () => {},
   logout: () => {},
@@ -52,7 +54,7 @@ export const DEMO_ACCOUNTS: Record<string, UserProfile> = {
   "jurado@demo.com": {
     name: "Dr. Marco Rinaldi",
     email: "jurado@demo.com",
-    role: "jurado",
+    role: "revisor",
     institution: "INFN Sezione di Pisa",
   },
   "admin@demo.com": {
@@ -63,7 +65,7 @@ export const DEMO_ACCOUNTS: Record<string, UserProfile> = {
   },
 };
 
-export const ROLE_CONFIG = {
+export const ROLE_CONFIG: Record<NonNullable<UserRole>, { label: string; color: string; bg: string; dashboardPath: string }> = {
   investigador: {
     label: "Investigador",
     color: "#3ecf8e",
@@ -76,8 +78,8 @@ export const ROLE_CONFIG = {
     bg: "rgba(108,142,191,0.12)",
     dashboardPath: "/dashboard/editor",
   },
-  jurado: {
-    label: "Jurado",
+  revisor: {
+    label: "Revisor",
     color: "#9b7fd4",
     bg: "rgba(155,127,212,0.12)",
     dashboardPath: "/dashboard/jurado",
@@ -102,6 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     return null;
   });
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
   const [authOpen, setAuthOpen] = useState(false);
 
   useEffect(() => {
@@ -112,12 +115,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  const login = (profile: UserProfile) => {
+  const login = (profile: UserProfile, jwt?: string) => {
     setUser(profile);
+    if (jwt) {
+      setToken(jwt);
+      localStorage.setItem("token", jwt);
+    }
   };
 
   const logout = () => {
     setUser(null);
+    setToken(null);
+    localStorage.removeItem("token");
   };
 
   return (
@@ -127,6 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         userName: user?.name,
         userRole: user?.role ?? null,
+        token,
         openAuth: () => setAuthOpen(true),
         login,
         logout,

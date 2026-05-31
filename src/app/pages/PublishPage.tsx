@@ -24,8 +24,6 @@ interface FormData {
   files: {
     manuscript: string;
     titlePage: string;
-    originalityLetter: string;
-    ethicsCert: string;
     authorsInfo: string;
   };
   titleEs: string;
@@ -33,26 +31,26 @@ interface FormData {
   abstractEs: string;
   abstractEn: string;
   keywords: string;
-  doi: string;
   coauthors: Coauthor[];
-  declaration: boolean;
   openAccess: boolean;
+  firmaOriginalidad: boolean;
+  firmaEtica: boolean;
 }
 
 const initialForm: FormData = {
   journal: "",
   program: "",
   researchLine: "",
-  files: { manuscript: "", titlePage: "", originalityLetter: "", ethicsCert: "", authorsInfo: "" },
+  files: { manuscript: "", titlePage: "", authorsInfo: "" },
   titleEs: "",
   titleEn: "",
   abstractEs: "",
   abstractEn: "",
   keywords: "",
-  doi: "",
   coauthors: [],
-  declaration: false,
   openAccess: false,
+  firmaOriginalidad: false,
+  firmaEtica: false,
 };
 
 function inputStyle(focused: boolean): React.CSSProperties {
@@ -116,14 +114,14 @@ export function PublishPage() {
     } else if (step === 2) {
       if (!form.files.manuscript) newErrors["files.manuscript"] = "Requerido";
       if (!form.files.titlePage) newErrors["files.titlePage"] = "Requerido";
-      if (!form.files.originalityLetter) newErrors["files.originalityLetter"] = "Requerido";
     } else if (step === 3) {
       if (!form.titleEs.trim()) newErrors.titleEs = "Requerido";
       if (!form.titleEn.trim()) newErrors.titleEn = "Requerido";
       if (form.abstractEs.trim().length < 50) newErrors.abstractEs = "Mínimo 50 caracteres";
       if (!form.keywords.trim()) newErrors.keywords = "Requerido";
     } else if (step === 4) {
-      if (!form.declaration) newErrors.declaration = "Debes aceptar la declaración";
+      if (!form.firmaOriginalidad) newErrors.firmaOriginalidad = "Debes aceptar la declaración de originalidad";
+      if (!form.firmaEtica) newErrors.firmaEtica = "Debes declarar la conformidad ética";
       form.coauthors.forEach((c, i) => {
         if (!c.name) newErrors[`coauthor_${i}_name`] = "Requerido";
         if (!c.email) newErrors[`coauthor_${i}_email`] = "Requerido";
@@ -298,8 +296,6 @@ export function PublishPage() {
                     
                     {renderFileDrop("files.manuscript", "Manuscrito Original (Anonimizado) *", "Debe incluir resumen, cuerpo y referencias. Sin nombres de autores. (PDF o DOCX)")}
                     {renderFileDrop("files.titlePage", "Página de Título *", "Contiene el título y todos los datos de los autores y filiaciones. (PDF o DOCX)")}
-                    {renderFileDrop("files.originalityLetter", "Carta de Originalidad *", "Firmada por todos los autores indicando que el trabajo es inédito.")}
-                    {renderFileDrop("files.ethicsCert", "Certificado de Ética (Si aplica)", "Requerido si el estudio involucró humanos o animales.")}
                     {renderFileDrop("files.authorsInfo", "Ficha de Autores (Opcional)", "Información adicional, ORCIDs y contribución CRediT.")}
                   </div>
                 )}
@@ -332,16 +328,10 @@ export function PublishPage() {
                       <textarea value={form.abstractEn} onChange={(e) => handleChange("abstractEn", e.target.value)} style={{ ...inputStyle(focused === "abstractEn"), minHeight: "100px", resize: "vertical" }} placeholder="Abstract in English..." />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label style={labelStyle}>Palabras Clave *</label>
-                        <input type="text" value={form.keywords} onChange={(e) => handleChange("keywords", e.target.value)} style={inputStyle(focused === "keywords")} placeholder="Ej: Salud, Nutrición, Niños" />
-                        {errors.keywords && <p style={errorStyle}><AlertCircle size={10} />{errors.keywords}</p>}
-                      </div>
-                      <div>
-                        <label style={labelStyle}>DOI (Opcional)</label>
-                        <input type="text" value={form.doi} onChange={(e) => handleChange("doi", e.target.value)} style={inputStyle(focused === "doi")} placeholder="Ej: 10.1234/ preprint" />
-                      </div>
+                    <div className="mb-4">
+                      <label style={labelStyle}>Palabras Clave *</label>
+                      <input type="text" value={form.keywords} onChange={(e) => handleChange("keywords", e.target.value)} style={inputStyle(focused === "keywords")} placeholder="Ej: Salud, Nutrición, Niños" />
+                      {errors.keywords && <p style={errorStyle}><AlertCircle size={10} />{errors.keywords}</p>}
                     </div>
                   </div>
                 )}
@@ -389,12 +379,21 @@ export function PublishPage() {
 
                     <div style={{ background: "#f9f9f9", padding: "16px", borderRadius: "6px", border: "1px solid #efefef", marginBottom: "24px" }}>
                       <label className="flex items-start gap-3 cursor-pointer mb-3">
-                        <input type="checkbox" checked={form.declaration} onChange={(e) => handleChange("declaration", e.target.checked)} style={{ marginTop: "3px" }} />
+                        <input type="checkbox" checked={form.firmaOriginalidad} onChange={(e) => handleChange("firmaOriginalidad", e.target.checked)} style={{ marginTop: "3px" }} />
                         <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#444", lineHeight: 1.5 }}>
-                          Declaro que este manuscrito es original, no ha sido publicado previamente y no está bajo revisión en otra revista. *
+                          Declaro bajo firma digital que este manuscrito es original, inédito y que no ha sido postulado simultáneamente en otras revistas (Carta de Originalidad). *
                         </span>
                       </label>
-                      {errors.declaration && <p style={errorStyle}><AlertCircle size={10} />{errors.declaration}</p>}
+                      {errors.firmaOriginalidad && <p style={errorStyle}><AlertCircle size={10} />{errors.firmaOriginalidad}</p>}
+
+                      <label className="flex items-start gap-3 cursor-pointer mb-3">
+                        <input type="checkbox" checked={form.firmaEtica} onChange={(e) => handleChange("firmaEtica", e.target.checked)} style={{ marginTop: "3px" }} />
+                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#444", lineHeight: 1.5 }}>
+                          Declaro bajo firma digital que el estudio cumple con los lineamientos éticos internacionales para la investigación (Certificado de Ética). *
+                        </span>
+                      </label>
+                      {errors.firmaEtica && <p style={errorStyle}><AlertCircle size={10} />{errors.firmaEtica}</p>}
+
                       <label className="flex items-start gap-3 cursor-pointer">
                         <input type="checkbox" checked={form.openAccess} onChange={(e) => handleChange("openAccess", e.target.checked)} style={{ marginTop: "3px" }} />
                         <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#444", lineHeight: 1.5 }}>

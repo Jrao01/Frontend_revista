@@ -3,14 +3,407 @@ import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   FileText, Plus, BookOpen, ArrowLeft, MessageSquare,
-  Send, CheckCircle, ChevronRight, Clock, AlertTriangle, Download, FileUp
+  Send, CheckCircle, ChevronRight, Clock, AlertTriangle
 } from "lucide-react";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { useAuth } from "../../context/AuthContext";
 import { useManuscripts } from "../../context/ManuscriptContext";
-import { type Manuscript, type ManuscriptStatus, STATUS_CONFIG } from "../../data/manuscripts";
-import { StatusBadge } from "./components/StatusBadge";
-import { WorkflowStepper } from "./components/WorkflowStepper";
+import { type Manuscript, type ManuscriptStatus, STATUS_CONFIG, WORKFLOW_STEPS } from "../../data/manuscripts";
+
+/* ─── Helpers ─────────────────────────────────────── */
+
+function StatusBadge({ status }: { status: ManuscriptStatus }) {
+  const c = STATUS_CONFIG[status];
+  return (
+    <span style={{
+      fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600,
+      color: c.color, background: c.bg, border: `1px solid ${c.color}30`,
+      padding: "3px 10px", borderRadius: "12px", letterSpacing: "0.07em",
+      textTransform: "uppercase", whiteSpace: "nowrap",
+    }}>
+      {c.label}
+    </span>
+  );
+}
+
+function WorkflowStepper({ manuscript }: { manuscript: Manuscript }) {
+  const currentStep = STATUS_CONFIG[manuscript.status].step;
+  const isRejected = manuscript.status === "rejected";
+
+  return (
+    <div style={{ padding: "24px 0 8px" }}>
+      <div className="flex items-start">
+        {WORKFLOW_STEPS.map((step, i) => {
+          const stepNum = i + 1;
+          const completed = currentStep > stepNum;
+          const active = currentStep === stepNum;
+          const rejected = isRejected && stepNum >= currentStep;
+
+          return (
+            <div key={step.key} className="flex items-start flex-1">
+              {/* Node + label */}
+              <div className="flex flex-col items-center" style={{ flex: "0 0 auto", minWidth: 0 }}>
+                <div style={{
+                  width: "34px", height: "34px", borderRadius: "50%",
+                  background: rejected ? "rgba(224,82,82,0.08)"
+                    : completed ? "#3ecf8e"
+                    : active ? "#0b0b0b"
+                    : "#f2f2f2",
+                  border: active ? "2px solid #0b0b0b" : "2px solid transparent",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "15px", fontFamily: "'Inter', sans-serif", fontWeight: 700,
+                  color: completed ? "#fff" : active ? "#fff" : "#ccc",
+                  flexShrink: 0,
+                  transition: "all 0.35s ease",
+                }}>
+                  {completed ? "✓" : stepNum}
+                </div>
+                <p style={{
+                  fontFamily: "'Inter', sans-serif", fontSize: "12px", marginTop: "6px",
+                  color: active ? "#0b0b0b" : completed ? "#3ecf8e" : "#bbb",
+                  textAlign: "center", fontWeight: active ? 600 : 400,
+                  maxWidth: "60px", lineHeight: 1.3,
+                }}>
+                  {step.label}
+                </p>
+              </div>
+              {/* Connector */}
+              {i < WORKFLOW_STEPS.length - 1 && (
+                <div style={{
+                  flex: 1, height: "2px", marginTop: "16px",
+                  background: completed ? "#3ecf8e" : "#f0f0f0",
+                  transition: "background 0.35s ease",
+                }} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Detail View ─────────────────────────────────── */
+
+function ManuscriptDetail({
+  manuscript,
+  onBack,
+}: {
+  manuscript: Manuscript;
+  onBack: () => void;
+}) {
+  const [replyText, setReplyText] = useState("");
+  const [replySent, setReplySent] = useState(false);
+  const { addComment } = useManuscripts();
+  const { user } = useAuth();
+
+  const publicComments = manuscript.comments.filter((c) => !c.isPrivate);
+  const needsRevision =
+    manuscript.status === "major_revision" || manuscript.status === "minor_revision";
+
+  const handleReply = () => {
+    if (!replyText.trim() || !user) return;
+    addComment(manuscript.id, {
+      author: user.name,
+      role: "investigador",
+      content: replyText,
+      date: new Date().toISOString().split("T")[0],
+    });
+    setReplyText("");
+    setReplySent(true);
+    setTimeout(() => setReplySent(false), 3000);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 28 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 28 }}
+      transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+    >
+      {/* Back button */}
+      <button
+        onClick={onBack}
+        className="flex items-center gap-2 mb-6"
+        style={{
+          background: "none", border: "none", cursor: "pointer",
+          fontFamily: "'Inter', sans-serif", fontSize: "16px",
+          color: "#888", padding: 0, transition: "color 0.15s",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#0b0b0b")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
+      >
+        <ArrowLeft size={14} /> Volver a mis manuscritos
+      </button>
+
+      {/* Header card */}
+      <div style={{
+        background: "#fff", border: "1px solid #efefef", borderRadius: "8px",
+        padding: "28px 32px", marginBottom: "16px",
+      }}>
+        <div className="flex items-start justify-between gap-4 mb-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <StatusBadge status={manuscript.status} />
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>
+              {manuscript.id.toUpperCase()} · {manuscript.category} · {manuscript.type}
+            </span>
+          </div>
+          {manuscript.doi && (
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#3ecf8e", flexShrink: 0 }}>
+              DOI: {manuscript.doi}
+            </span>
+          )}
+        </div>
+
+        <h2 style={{
+          fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 600,
+          color: "#0b0b0b", lineHeight: 1.3, letterSpacing: "-0.02em", marginBottom: "10px",
+        }}>
+          {manuscript.title}
+        </h2>
+
+        <div className="flex flex-wrap gap-4">
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>
+            <strong style={{ color: "#555" }}>Autores:</strong> {[manuscript.submittedByName, ...manuscript.coauthors].join(", ")}
+          </span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>
+            <strong style={{ color: "#555" }}>Institución:</strong> {manuscript.institution}
+          </span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>
+            <strong style={{ color: "#555" }}>Enviado:</strong> {manuscript.submittedDate}
+          </span>
+          {manuscript.wordCount && (
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>
+              <strong style={{ color: "#555" }}>Extensión:</strong> {manuscript.wordCount.toLocaleString()} palabras · {manuscript.pages} páginas
+            </span>
+          )}
+        </div>
+
+        {/* Keywords */}
+        <div className="flex flex-wrap gap-2 mt-4">
+          {manuscript.keywords.map((kw) => (
+            <span key={kw} style={{
+              fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#888",
+              background: "#f5f5f5", padding: "3px 10px", borderRadius: "3px",
+            }}>
+              {kw}
+            </span>
+          ))}
+        </div>
+
+        {/* Workflow stepper */}
+        <WorkflowStepper manuscript={manuscript} />
+      </div>
+
+      {/* Revision alert */}
+      {needsRevision && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            background: "rgba(232,197,94,0.08)", border: "1px solid rgba(232,197,94,0.35)",
+            borderRadius: "8px", padding: "16px 20px", marginBottom: "16px",
+            display: "flex", alignItems: "flex-start", gap: "12px",
+          }}
+        >
+          <AlertTriangle size={16} color="#e8c55e" style={{ flexShrink: 0, marginTop: "2px" }} />
+          <div>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 600, color: "#8a7020", marginBottom: "3px" }}>
+              {manuscript.status === "major_revision" ? "Revisión mayor requerida" : "Revisión menor requerida"}
+            </p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#a08830", lineHeight: 1.5 }}>
+              El equipo editorial ha solicitado cambios en tu manuscrito. Revisa los comentarios abajo y envía tu respuesta.
+            </p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Published banner */}
+      {manuscript.status === "published" && manuscript.articleSlug && (
+        <div style={{
+          background: "rgba(62,207,142,0.07)", border: "1px solid rgba(62,207,142,0.25)",
+          borderRadius: "8px", padding: "16px 20px", marginBottom: "16px",
+          display: "flex", alignItems: "center", gap: "12px",
+        }}>
+          <CheckCircle size={16} color="#3ecf8e" />
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#2a7a55", flex: 1 }}>
+            Tu artículo está publicado · DOI permanente: <strong>{manuscript.doi}</strong>
+          </p>
+          <Link
+            to={`/articulo/${manuscript.articleSlug}`}
+            style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#3ecf8e", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
+          >
+            Ver artículo →
+          </Link>
+        </div>
+      )}
+
+      {/* Timeline */}
+      <div style={{
+        background: "#fff", border: "1px solid #efefef", borderRadius: "8px",
+        padding: "24px 32px", marginBottom: "16px",
+      }}>
+        <p style={{
+          fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700,
+          color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "20px",
+        }}>
+          Historial del proceso
+        </p>
+
+        <div>
+          {manuscript.timeline.map((entry, i) => {
+            const isLast = i === manuscript.timeline.length - 1;
+            return (
+              <div key={i} className="flex gap-4">
+                {/* Left: dot + line */}
+                <div className="flex flex-col items-center" style={{ flexShrink: 0, width: "20px" }}>
+                  <div style={{
+                    width: "10px", height: "10px", borderRadius: "50%",
+                    background: isLast ? STATUS_CONFIG[entry.status].color : "#ddd",
+                    border: isLast ? `2px solid ${STATUS_CONFIG[entry.status].color}` : "2px solid #ddd",
+                    flexShrink: 0, marginTop: "4px",
+                    boxShadow: isLast ? `0 0 0 4px ${STATUS_CONFIG[entry.status].color}18` : "none",
+                    transition: "all 0.3s",
+                  }} />
+                  {!isLast && (
+                    <div style={{ width: "1px", flex: 1, background: "#f0f0f0", minHeight: "28px" }} />
+                  )}
+                </div>
+
+                {/* Right: content */}
+                <div style={{ paddingBottom: isLast ? 0 : "20px", flex: 1 }}>
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <StatusBadge status={entry.status} />
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>
+                      {entry.date}
+                    </span>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#ccc" }}>
+                      · {entry.actor} ({entry.actorRole})
+                    </span>
+                  </div>
+                  {entry.note && (
+                    <p style={{
+                      fontFamily: "'Inter', sans-serif", fontSize: "16px",
+                      color: "#666", lineHeight: 1.6, marginTop: "4px",
+                    }}>
+                      {entry.note}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Comments */}
+      {publicComments.length > 0 && (
+        <div style={{
+          background: "#fff", border: "1px solid #efefef", borderRadius: "8px",
+          padding: "24px 32px", marginBottom: "16px",
+        }}>
+          <p style={{
+            fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700,
+            color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "20px",
+          }}>
+            Comentarios del equipo editorial
+          </p>
+
+          <div className="flex flex-col gap-4">
+            {publicComments.map((comment) => {
+              const isEditor = comment.role === "editor";
+              const accentColor = isEditor ? "#6c8ebf" : comment.role === "investigador" ? "#3ecf8e" : "#9b7fd4";
+              return (
+                <div key={comment.id} style={{
+                  borderLeft: `3px solid ${accentColor}`,
+                  paddingLeft: "16px",
+                }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div style={{
+                      width: "26px", height: "26px", borderRadius: "50%",
+                      background: `${accentColor}20`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      flexShrink: 0,
+                    }}>
+                      <span style={{ fontSize: "13px", fontWeight: 700, color: accentColor, fontFamily: "'Inter', sans-serif" }}>
+                        {comment.author.charAt(0)}
+                      </span>
+                    </div>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 600, color: "#333" }}>
+                      {comment.author}
+                    </span>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>
+                      {comment.role === "editor" ? "Editor" : comment.role === "investigador" ? "Autor" : "Revisor"} · {comment.date}
+                    </span>
+                  </div>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#444", lineHeight: 1.7 }}>
+                    {comment.content}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Reply box */}
+      {needsRevision && (
+        <div style={{
+          background: "#fff", border: "1px solid #efefef", borderRadius: "8px",
+          padding: "24px 32px",
+        }}>
+          <p style={{
+            fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700,
+            color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "14px",
+          }}>
+            Responder a los revisores
+          </p>
+          <textarea
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            placeholder="Escribe tu respuesta detallada punto por punto a cada comentario del revisor..."
+            style={{
+              width: "100%", minHeight: "120px", padding: "12px 14px",
+              border: "1px solid #e8e8e8", borderRadius: "6px",
+              fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#333",
+              outline: "none", resize: "vertical", lineHeight: 1.7,
+              boxSizing: "border-box", transition: "border-color 0.2s",
+            }}
+            onFocus={(e) => (e.target.style.borderColor = "#0b0b0b")}
+            onBlur={(e) => (e.target.style.borderColor = "#e8e8e8")}
+          />
+
+          <div className="flex items-center gap-3 mt-3">
+            <button
+              onClick={handleReply}
+              disabled={!replyText.trim()}
+              className="flex items-center gap-2 px-5 py-2.5 rounded"
+              style={{
+                background: replyText.trim() ? "#0b0b0b" : "#f0f0f0",
+                color: replyText.trim() ? "#fff" : "#ccc",
+                fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 500,
+                border: "none", cursor: replyText.trim() ? "pointer" : "not-allowed",
+                transition: "all 0.2s",
+              }}
+            >
+              <Send size={13} /> Enviar respuesta
+            </button>
+            {replySent && (
+              <motion.span
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#3ecf8e" }}
+              >
+                ✓ Respuesta enviada al editor
+              </motion.span>
+            )}
+          </div>
+        </div>
+      )}
+    </motion.div>
+  );
+}
 
 /* ─── List Item ────────────────────────────────────── */
 
@@ -49,34 +442,47 @@ function ManuscriptListItem({
         (e.currentTarget as HTMLElement).style.borderColor = "#efefef";
       }}
     >
+      {/* Color accent top bar */}
       <div style={{ height: "3px", background: conf.color, opacity: 0.7 }} />
 
-      <div className="px-4 md:px-6 py-4 md:py-5">
-        <div className="flex items-start justify-between gap-3 md:gap-4">
+      <div className="px-6 py-5">
+        <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2 md:mb-3 flex-wrap">
+            {/* Meta row */}
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
               <StatusBadge status={manuscript.status} />
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#ccc" }}>
-                {manuscript.id.toUpperCase()} · {manuscript.category}
+                {manuscript.id.toUpperCase()}
+              </span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#ccc" }}>·</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>
+                {manuscript.category}
+              </span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#ccc" }}>·</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>
+                {manuscript.type}
               </span>
             </div>
 
-            <h3
-              style={{
-                fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: 600,
-                color: "#0b0b0b", lineHeight: 1.35, letterSpacing: "-0.01em",
-                marginBottom: "8px", overflow: "hidden",
-                display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-              }}
-            >
+            {/* Title */}
+            <h3 style={{
+              fontFamily: "'Playfair Display', serif", fontSize: "17px", fontWeight: 600,
+              color: "#0b0b0b", lineHeight: 1.35, letterSpacing: "-0.01em",
+              marginBottom: "10px",
+              overflow: "hidden",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+            }}>
               {manuscript.title}
             </h3>
 
-            <div className="flex items-center gap-3 flex-wrap">
+            {/* Bottom row */}
+            <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-1.5">
                 <Clock size={11} color="#ccc" />
                 <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>
-                  {manuscript.submittedDate}
+                  Enviado {manuscript.submittedDate}
                 </span>
               </div>
               {manuscript.wordCount && (
@@ -88,294 +494,40 @@ function ManuscriptListItem({
                 <div className="flex items-center gap-1">
                   <MessageSquare size={11} color="#bbb" />
                   <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>
-                    {publicComments}
+                    {publicComments} {publicComments === 1 ? "comentario" : "comentarios"}
                   </span>
                 </div>
               )}
+              {lastUpdate && (
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>
+                  Última act. {lastUpdate.date}
+                </span>
+              )}
             </div>
 
+            {/* Action required */}
             {needsAction && (
               <div className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: "1px solid #f5f5f5" }}>
                 <AlertTriangle size={12} color="#e8c55e" />
                 <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 600, color: "#c8962a" }}>
-                  {manuscript.status === "major_revision" ? "Revisión mayor pendiente" : "Revisión menor pendiente"}
+                  Requiere tu atención — {manuscript.status === "major_revision" ? "Revisión mayor pendiente" : "Revisión menor pendiente"}
                 </span>
               </div>
             )}
           </div>
 
-          <div style={{ flexShrink: 0 }}>
+          {/* Arrow */}
+          <div style={{ flexShrink: 0, paddingTop: "2px" }}>
             <div style={{
-              width: "30px", height: "30px", borderRadius: "50%",
+              width: "32px", height: "32px", borderRadius: "50%",
               background: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center",
             }}>
-              <ChevronRight size={14} color="#aaa" />
+              <ChevronRight size={15} color="#aaa" />
             </div>
           </div>
         </div>
       </div>
     </motion.button>
-  );
-}
-
-/* ─── Detail View ─────────────────────────────────── */
-
-function ManuscriptDetail({
-  manuscript,
-  onBack,
-}: {
-  manuscript: Manuscript;
-  onBack: () => void;
-}) {
-  const [replyText, setReplyText] = useState("");
-  const [replySent, setReplySent] = useState(false);
-  const { addComment } = useManuscripts();
-  const { user } = useAuth();
-
-  const publicComments = manuscript.comments.filter((c) => !c.isPrivate);
-  const needsRevision =
-    manuscript.status === "major_revision" || manuscript.status === "minor_revision";
-
-  const handleReply = () => {
-    if (!replyText.trim() || !user) return;
-    addComment(manuscript.id, {
-      author: user.name,
-      role: "investigador",
-      content: replyText,
-      date: new Date().toISOString().split("T")[0],
-    });
-    setReplyText("");
-    setReplySent(true);
-    setTimeout(() => setReplySent(false), 3000);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
-    >
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 mb-5"
-        style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#888", padding: 0 }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#0b0b0b")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
-      >
-        <ArrowLeft size={14} /> Volver a mis manuscritos
-      </button>
-
-      {/* Header */}
-      <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
-        <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
-          <div className="flex items-center gap-2 flex-wrap">
-            <StatusBadge status={manuscript.status} />
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>
-              {manuscript.id.toUpperCase()} · {manuscript.category} · {manuscript.type}
-            </span>
-          </div>
-          {manuscript.doi && (
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#3ecf8e" }}>
-              {manuscript.doi}
-            </span>
-          )}
-        </div>
-
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: 600, color: "#0b0b0b", lineHeight: 1.3, letterSpacing: "-0.02em", marginBottom: "10px" }}>
-          {manuscript.title}
-        </h2>
-
-        <div className="flex flex-wrap gap-x-4 gap-y-1">
-          {[
-            { label: "Autores", value: [manuscript.submittedByName, ...manuscript.coauthors].join(", ") },
-            { label: "Institución", value: manuscript.institution },
-            { label: "Enviado", value: manuscript.submittedDate },
-            manuscript.wordCount ? { label: "Extensión", value: `${manuscript.wordCount.toLocaleString()} palabras` } : null,
-          ].filter(Boolean).map((item) => (
-            <span key={item!.label} style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>
-              <strong style={{ color: "#555" }}>{item!.label}:</strong> {item!.value}
-            </span>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap gap-2 mt-3">
-          {manuscript.keywords.map((kw) => (
-            <span key={kw} style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#888", background: "#f5f5f5", padding: "3px 10px", borderRadius: "3px" }}>
-              {kw}
-            </span>
-          ))}
-        </div>
-
-        <WorkflowStepper manuscript={manuscript} />
-      </div>
-
-      {/* Archivos y Revisiones */}
-      <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "14px" }}>
-          Archivos del Manuscrito
-        </p>
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between p-3 rounded" style={{ background: "#f9f9f9", border: "1px solid #f0f0f0" }}>
-            <div className="flex items-center gap-3">
-              <FileText size={16} color="#6c8ebf" />
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#333", fontWeight: 500 }}>Manuscrito Original Enviado</span>
-            </div>
-            <button style={{ background: "none", border: "none", color: "#6c8ebf", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "14px" }}>Descargar</button>
-          </div>
-          
-          {needsRevision && (
-            <>
-              <div className="flex items-center justify-between p-3 rounded" style={{ background: "#f9f9f9", border: "1px solid #f0f0f0" }}>
-                <div className="flex items-center gap-3">
-                  <Download size={16} color="#e8c55e" />
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#333", fontWeight: 500 }}>Informes de Revisión (Jurados)</span>
-                </div>
-                <button style={{ background: "none", border: "none", color: "#e8c55e", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 600 }}>Descargar ZIP</button>
-              </div>
-              
-              <div className="flex items-center justify-between p-4 rounded mt-2" style={{ background: "#fafafa", border: "1px dashed #d0d0d0" }}>
-                <div>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 600, color: "#333" }}>Subir Manuscrito Corregido</p>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#666" }}>Versión con los cambios solicitados aplicados.</p>
-                </div>
-                <label style={{ background: "#0b0b0b", color: "#fff", padding: "8px 16px", borderRadius: "4px", fontFamily: "'Inter', sans-serif", fontSize: "14px", fontWeight: 500, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px" }}>
-                  <input type="file" style={{ display: "none" }} />
-                  <FileUp size={14} /> Subir archivo
-                </label>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Alerts */}
-      {needsRevision && (
-        <div style={{ background: "rgba(232,197,94,0.08)", border: "1px solid rgba(232,197,94,0.35)", borderRadius: "8px", padding: "14px 18px", marginBottom: "14px", display: "flex", alignItems: "flex-start", gap: "10px" }}>
-          <AlertTriangle size={15} color="#e8c55e" style={{ flexShrink: 0, marginTop: "2px" }} />
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#8a7020", lineHeight: 1.5 }}>
-            <strong>{manuscript.status === "major_revision" ? "Revisión mayor requerida." : "Revisión menor requerida."}</strong> Revisa los comentarios del equipo editorial y responde punto por punto.
-          </p>
-        </div>
-      )}
-
-      {manuscript.status === "published" && manuscript.articleSlug && (
-        <div style={{ background: "rgba(62,207,142,0.07)", border: "1px solid rgba(62,207,142,0.25)", borderRadius: "8px", padding: "14px 18px", marginBottom: "14px", display: "flex", alignItems: "center", gap: "10px" }}>
-          <CheckCircle size={15} color="#3ecf8e" />
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#2a7a55", flex: 1 }}>
-            Artículo publicado · <strong>{manuscript.doi}</strong>
-          </p>
-          <Link to={`/articulo/${manuscript.articleSlug}`} style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#3ecf8e", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
-            Ver →
-          </Link>
-        </div>
-      )}
-
-      {/* Timeline */}
-      <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "18px" }}>
-          Historial del proceso
-        </p>
-        {manuscript.timeline.map((entry, i) => {
-          const isLast = i === manuscript.timeline.length - 1;
-          return (
-            <div key={i} className="flex gap-4">
-              <div className="flex flex-col items-center" style={{ flexShrink: 0, width: "18px" }}>
-                <div style={{
-                  width: "10px", height: "10px", borderRadius: "50%",
-                  background: isLast ? STATUS_CONFIG[entry.status].color : "#ddd",
-                  border: isLast ? `2px solid ${STATUS_CONFIG[entry.status].color}` : "2px solid #ddd",
-                  marginTop: "4px", flexShrink: 0,
-                  boxShadow: isLast ? `0 0 0 4px ${STATUS_CONFIG[entry.status].color}18` : "none",
-                }} />
-                {!isLast && <div style={{ width: "1px", flex: 1, background: "#f0f0f0", minHeight: "24px" }} />}
-              </div>
-              <div style={{ paddingBottom: isLast ? 0 : "18px", flex: 1 }}>
-                <div className="flex items-center gap-2 flex-wrap mb-1">
-                  <StatusBadge status={entry.status} size="sm" />
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>{entry.date} · {entry.actor}</span>
-                </div>
-                {entry.note && (
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#666", lineHeight: 1.6, marginTop: "3px" }}>{entry.note}</p>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Comments */}
-      {publicComments.length > 0 && (
-        <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px", marginBottom: "14px" }}>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "18px" }}>
-            Comentarios del equipo editorial
-          </p>
-          <div className="flex flex-col gap-4">
-            {publicComments.map((comment) => {
-              const accentColor = comment.role === "editor" ? "#6c8ebf" : comment.role === "investigador" ? "#3ecf8e" : "#9b7fd4";
-              return (
-                <div key={comment.id} style={{ borderLeft: `3px solid ${accentColor}`, paddingLeft: "14px" }}>
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 600, color: "#333" }}>{comment.author}</span>
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb" }}>
-                      {comment.role === "editor" ? "Editor" : comment.role === "investigador" ? "Autor" : "Revisor"} · {comment.date}
-                    </span>
-                  </div>
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#444", lineHeight: 1.7 }}>{comment.content}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Reply box */}
-      {needsRevision && (
-        <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px 24px" }}>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 700, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "14px" }}>
-            Responder a los revisores
-          </p>
-          <textarea
-            value={replyText}
-            onChange={(e) => setReplyText(e.target.value)}
-            placeholder="Escribe tu respuesta detallada punto por punto a cada comentario del revisor..."
-            style={{
-              width: "100%", minHeight: "110px", padding: "12px 14px",
-              border: "1px solid #e8e8e8", borderRadius: "6px",
-              fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#333",
-              outline: "none", resize: "vertical", lineHeight: 1.7, boxSizing: "border-box",
-              transition: "border-color 0.2s",
-            }}
-            onFocus={(e) => (e.target.style.borderColor = "#0b0b0b")}
-            onBlur={(e) => (e.target.style.borderColor = "#e8e8e8")}
-          />
-          <div className="flex items-center gap-3 mt-3">
-            <button
-              onClick={handleReply}
-              disabled={!replyText.trim()}
-              className="flex items-center gap-2 px-4 py-2.5 rounded"
-              style={{
-                background: replyText.trim() ? "#0b0b0b" : "#f0f0f0",
-                color: replyText.trim() ? "#fff" : "#ccc",
-                fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 500,
-                border: "none", cursor: replyText.trim() ? "pointer" : "not-allowed", transition: "all 0.2s",
-              }}
-            >
-              <Send size={13} /> Enviar respuesta
-            </button>
-            {replySent && (
-              <motion.span
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#3ecf8e" }}
-              >
-                ✓ Enviado al editor
-              </motion.span>
-            )}
-          </div>
-        </div>
-      )}
-    </motion.div>
   );
 }
 
@@ -396,16 +548,16 @@ function Overview({
   const stats = [
     { label: "Total enviados", value: manuscripts.length, color: "#6c8ebf" },
     { label: "En revisión", value: (statusCounts.editor_review || 0) + (statusCounts.peer_review || 0), color: "#9b7fd4" },
-    { label: "Acción requerida", value: (statusCounts.major_revision || 0) + (statusCounts.minor_revision || 0), color: "#e8c55e" },
+    { label: "Requieren acción", value: (statusCounts.major_revision || 0) + (statusCounts.minor_revision || 0), color: "#e8c55e" },
     { label: "Publicados", value: (statusCounts.published || 0) + (statusCounts.accepted || 0), color: "#3ecf8e" },
   ];
 
   return (
     <div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {stats.map((s) => (
-          <div key={s.label} style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "16px 18px" }}>
-            <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: 600, color: s.color, lineHeight: 1, marginBottom: "4px" }}>
+          <div key={s.label} style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "20px" }}>
+            <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: 600, color: s.color, lineHeight: 1, marginBottom: "6px" }}>
               {s.value}
             </p>
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#888" }}>{s.label}</p>
@@ -413,19 +565,29 @@ function Overview({
         ))}
       </div>
 
-      <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "17px", fontWeight: 600, color: "#0b0b0b", marginBottom: "12px" }}>
-        Envíos recientes
+      <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: 600, color: "#0b0b0b", marginBottom: "14px" }}>
+        Tus envíos recientes
       </p>
+
       <div className="flex flex-col gap-3">
         {manuscripts.slice(0, 4).map((m) => (
-          <ManuscriptListItem key={m.id} manuscript={m} onClick={() => onSelectManuscript(m.id)} />
+          <ManuscriptListItem
+            key={m.id}
+            manuscript={m}
+            onClick={() => onSelectManuscript(m.id)}
+          />
         ))}
+        {manuscripts.length > 4 && (
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#bbb", textAlign: "center", paddingTop: "4px" }}>
+            +{manuscripts.length - 4} más en "Mis Manuscritos"
+          </p>
+        )}
       </div>
     </div>
   );
 }
 
-/* ─── Main ─────────────────────────────────────────── */
+/* ─── Main Component ───────────────────────────────── */
 
 export function InvestigadorDashboard() {
   const [section, setSection] = useState("overview");
@@ -440,53 +602,72 @@ export function InvestigadorDashboard() {
 
   const selectedManuscript = selectedId ? getManuscript(selectedId) : null;
 
-  const navItems = [
-    { id: "overview", label: "Resumen", icon: <BookOpen size={14} /> },
-    { id: "manuscripts", label: "Mis Manuscritos", icon: <FileText size={14} />, badge: needsAction },
-    { id: "submit", label: "Nuevo Envío", icon: <Plus size={14} /> },
-  ];
+  const handleSelectManuscript = (id: string) => {
+    setSelectedId(id);
+    if (section !== "manuscripts") setSection("manuscripts");
+  };
+
+  const handleBack = () => {
+    setSelectedId(null);
+  };
 
   const handleSectionChange = (s: string) => {
     setSection(s);
     setSelectedId(null);
   };
 
-  const handleSelectManuscript = (id: string) => {
-    setSelectedId(id);
-    if (section !== "manuscripts") setSection("manuscripts");
-  };
+  const navItems = [
+    { id: "overview", label: "Resumen", icon: <BookOpen size={14} /> },
+    { id: "manuscripts", label: "Mis Manuscritos", icon: <FileText size={14} />, badge: needsAction },
+    { id: "submit", label: "Nuevo Envío", icon: <Plus size={14} /> },
+  ];
 
-  const getTitle = () => {
-    if (section === "manuscripts") return selectedManuscript ? "Detalle del manuscrito" : "Mis Manuscritos";
-    if (section === "submit") return "Nuevo Envío";
-    return "Panel del Investigador";
-  };
+  // Determine header title
+  let headerTitle = "Panel del Investigador";
+  let headerSubtitle: string | undefined = `Bienvenido, ${user?.name?.split(" ")[0]}`;
+  if (section === "manuscripts") {
+    headerTitle = selectedManuscript ? "Detalle del manuscrito" : "Mis Manuscritos";
+    headerSubtitle = selectedManuscript ? undefined : `${myManuscripts.length} envío${myManuscripts.length !== 1 ? "s" : ""}`;
+  } else if (section === "submit") {
+    headerTitle = "Nuevo Envío";
+    headerSubtitle = undefined;
+  }
 
   return (
     <DashboardLayout
       navItems={navItems}
       activeSection={section}
       onSectionChange={handleSectionChange}
-      title={getTitle()}
-      subtitle={
-        section === "overview" ? `Bienvenido, ${user?.name?.split(" ")[0]}` :
-        section === "manuscripts" && !selectedManuscript ? `${myManuscripts.length} manuscrito${myManuscripts.length !== 1 ? "s" : ""}` :
-        undefined
-      }
+      title={headerTitle}
+      subtitle={headerSubtitle}
     >
       <AnimatePresence mode="wait">
+        {/* OVERVIEW */}
         {section === "overview" && (
-          <motion.div key="overview" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
+          <motion.div
+            key="overview"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+          >
             <Overview manuscripts={myManuscripts} onSelectManuscript={handleSelectManuscript} />
           </motion.div>
         )}
 
+        {/* MANUSCRIPTS — LIST */}
         {section === "manuscripts" && !selectedManuscript && (
-          <motion.div key="list" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
+          <motion.div
+            key="list"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+          >
             {myManuscripts.length === 0 ? (
-              <div className="text-center py-16">
-                <FileText size={28} color="#e0e0e0" className="mx-auto mb-3" />
-                <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "20px", fontStyle: "italic", color: "#ccc", marginBottom: "16px" }}>
+              <div className="text-center py-20">
+                <FileText size={32} color="#e0e0e0" className="mx-auto mb-4" />
+                <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "22px", fontStyle: "italic", color: "#ccc", marginBottom: "16px" }}>
                   Aún no has enviado ningún manuscrito.
                 </p>
                 <button
@@ -494,14 +675,22 @@ export function InvestigadorDashboard() {
                   className="px-5 py-2.5 rounded inline-flex items-center gap-2"
                   style={{ background: "#0b0b0b", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: "16px", border: "none", cursor: "pointer" }}
                 >
-                  <Plus size={13} /> Enviar primero
+                  <Plus size={13} /> Enviar primer manuscrito
                 </button>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
                 {myManuscripts.map((m, i) => (
-                  <motion.div key={m.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.16, delay: i * 0.05 }}>
-                    <ManuscriptListItem manuscript={m} onClick={() => setSelectedId(m.id)} />
+                  <motion.div
+                    key={m.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.18, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+                  >
+                    <ManuscriptListItem
+                      manuscript={m}
+                      onClick={() => setSelectedId(m.id)}
+                    />
                   </motion.div>
                 ))}
               </div>
@@ -509,21 +698,37 @@ export function InvestigadorDashboard() {
           </motion.div>
         )}
 
+        {/* MANUSCRIPTS — DETAIL */}
         {section === "manuscripts" && selectedManuscript && (
-          <ManuscriptDetail key={`detail-${selectedManuscript.id}`} manuscript={selectedManuscript} onBack={() => setSelectedId(null)} />
+          <ManuscriptDetail
+            key={`detail-${selectedManuscript.id}`}
+            manuscript={selectedManuscript}
+            onBack={handleBack}
+          />
         )}
 
+        {/* SUBMIT */}
         {section === "submit" && (
-          <motion.div key="submit" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
-            <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "24px 28px" }}>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: 600, color: "#0b0b0b", marginBottom: "8px" }}>
+          <motion.div
+            key="submit"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+          >
+            <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "8px", padding: "32px" }}>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 600, color: "#0b0b0b", marginBottom: "8px" }}>
                 Enviar nuevo manuscrito
               </h3>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#888", marginBottom: "20px", lineHeight: 1.6 }}>
-                Usa el formulario completo de envío para subir tu trabajo.
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#888", marginBottom: "24px", lineHeight: 1.6 }}>
+                Usa el formulario de envío para subir tu trabajo. Una vez recibido, un editor lo revisará y lo asignará al flujo de revisión por pares.
               </p>
-              <Link to="/publicar" className="inline-flex items-center gap-2 px-5 py-3 rounded" style={{ background: "#0b0b0b", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 500, textDecoration: "none" }}>
-                <Plus size={14} /> Ir al formulario
+              <Link
+                to="/publicar"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded"
+                style={{ background: "#0b0b0b", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: "16px", fontWeight: 500, textDecoration: "none" }}
+              >
+                <Plus size={14} /> Ir al formulario de envío
               </Link>
             </div>
           </motion.div>
