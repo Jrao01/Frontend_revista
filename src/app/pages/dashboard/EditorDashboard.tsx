@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   GitBranch, CheckSquare, ArrowLeft, Users, ChevronRight,
-  Clock, MessageSquare, AlertTriangle, CheckCircle
+  Clock, MessageSquare, AlertTriangle, CheckCircle, Download, Plus
 } from "lucide-react";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { useAuth } from "../../context/AuthContext";
@@ -163,10 +163,33 @@ function ManuscriptDetail({
   const [decisionNote, setDecisionNote] = useState("");
   const [showJuradoMenu, setShowJuradoMenu] = useState(false);
   const [decisionSent, setDecisionSent] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [realArchivos, setRealArchivos] = useState<any[]>([]);
   const { user } = useAuth();
   const { updateStatus, assignJurado, removeJurado, addComment } = useManuscripts();
 
   const nextStatuses = NEXT_STATUS[manuscript.status] ?? [];
+
+  // Fetch real files if the manuscript has a backend articuloId
+  useEffect(() => {
+    if ((manuscript as any).articuloId) {
+      fetch(`http://localhost:3000/api/articulos/${(manuscript as any).articuloId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (data?.archivo_articulos) setRealArchivos(data.archivo_articulos);
+        })
+        .catch(() => {});
+    }
+  }, [(manuscript as any).articuloId]);
+
+  const tipoLabels: Record<string, string> = {
+    manuscrito_original: "Manuscrito Original",
+    pagina_titulo: "Página de Título",
+    ficha_autores: "Ficha de Autores",
+    material_suplementario: "Material Suplementario",
+  };
 
   const statusActionLabels: Partial<Record<ManuscriptStatus, string>> = {
     editor_review: "Pasar a Revisión Editorial",
@@ -266,6 +289,46 @@ function ManuscriptDetail({
             ))}
           </div>
         </div>
+
+        {/* Archivos del Manuscrito */}
+        <div style={{ background: "#fafafa", border: "1px solid #f0f0f0", borderRadius: "6px", padding: "16px", marginTop: "16px" }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "#bbb", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "12px" }}>Archivos del Manuscrito</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {realArchivos.length > 0 ? (
+              realArchivos.map((archivo: any) => (
+                <a
+                  key={archivo.id}
+                  href={`http://localhost:3000/${archivo.url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-3 rounded bg-white border border-neutral-100 hover:border-black transition"
+                  style={{ textDecoration: "none", color: "#333", fontFamily: "'Inter', sans-serif", fontSize: "14px" }}
+                >
+                  <span className="font-semibold text-neutral-700">{tipoLabels[archivo.tipo_archivo] ?? archivo.tipo_archivo}</span>
+                  <Download size={14} className="text-neutral-400" />
+                </a>
+              ))
+            ) : (
+              [
+                { label: "Manuscrito Original", filename: `${manuscript.id}_manuscrito.pdf` },
+                { label: "Página de Título", filename: `${manuscript.id}_titulo.docx` },
+                { label: "Ficha de Autores", filename: `${manuscript.id}_ficha.pdf` },
+                { label: "Material Suplementario", filename: `${manuscript.id}_suplemento.pdf` }
+              ].map((doc) => (
+                <a
+                  key={doc.label}
+                  href="#"
+                  onClick={(e) => { e.preventDefault(); alert(`Iniciando descarga de: ${doc.filename}`); }}
+                  className="flex items-center justify-between p-3 rounded bg-white border border-neutral-100 hover:border-black transition"
+                  style={{ textDecoration: "none", color: "#333", fontFamily: "'Inter', sans-serif", fontSize: "14px" }}
+                >
+                  <span className="font-semibold text-neutral-700">{doc.label}</span>
+                  <Download size={14} className="text-neutral-400" />
+                </a>
+              ))
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Jurados */}
@@ -276,34 +339,52 @@ function ManuscriptDetail({
           </p>
           <div className="relative">
             <button
-              onClick={() => setShowJuradoMenu(!showJuradoMenu)}
+              onClick={() => {
+                setShowJuradoMenu(!showJuradoMenu);
+                setSearchQuery("");
+              }}
               className="flex items-center gap-1.5 px-3 py-2 rounded"
               style={{ background: "#f5f5f5", border: "1px solid #e8e8e8", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#555" }}
             >
               <Users size={12} /> + Asignar jurado
             </button>
-            {showJuradoMenu && (
-              <div style={{ position: "absolute", right: 0, top: "36px", background: "#fff", border: "1px solid #e8e8e8", borderRadius: "6px", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", minWidth: "220px", zIndex: 50, overflow: "hidden" }}>
-                {availableJurados.length === 0 ? (
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#bbb", padding: "14px 16px" }}>
-                    Todos los jurados ya asignados
-                  </p>
-                ) : (
-                  availableJurados.map((j) => (
-                    <button
-                      key={j.email}
-                      onClick={() => { assignJurado(manuscript.id, j.email, j.name); setShowJuradoMenu(false); }}
-                      style={{ width: "100%", textAlign: "left", padding: "10px 16px", border: "none", background: "none", cursor: "pointer", borderBottom: "1px solid #f9f9f9", transition: "background 0.1s" }}
-                      onMouseEnter={(e) => (e.currentTarget.style.background = "#f9f9f9")}
-                      onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
-                    >
-                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#333", fontWeight: 500 }}>{j.name}</p>
-                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#aaa" }}>{j.institution}</p>
-                    </button>
-                  ))
-                )}
-              </div>
-            )}
+            {showJuradoMenu && (() => {
+              const filteredAvailableJurados = availableJurados.filter(
+                (j) => j.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                       j.institution.toLowerCase().includes(searchQuery.toLowerCase())
+              );
+              return (
+                <div style={{ position: "absolute", right: 0, top: "36px", background: "#fff", border: "1px solid #e8e8e8", borderRadius: "6px", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", minWidth: "260px", zIndex: 50, overflow: "hidden", padding: "8px" }} className="flex flex-col gap-2">
+                  <input
+                    type="text"
+                    placeholder="Buscar por nombre o institución..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ width: "100%", padding: "8px 10px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none", fontFamily: "'Inter', sans-serif", fontSize: "14px", boxSizing: "border-box" }}
+                    autoFocus
+                  />
+                  <div style={{ maxHeight: "180px", overflowY: "auto" }}>
+                    {filteredAvailableJurados.length === 0 ? (
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#bbb", padding: "10px", textAlign: "center" }}>
+                        No se encontraron jurados.
+                      </p>
+                    ) : (
+                      filteredAvailableJurados.map((j) => (
+                        <button
+                          key={j.email}
+                          onClick={() => { assignJurado(manuscript.id, j.email, j.name); setShowJuradoMenu(false); setSearchQuery(""); }}
+                          style={{ width: "100%", textAlign: "left", padding: "8px", border: "none", background: "none", cursor: "pointer", borderBottom: "1px solid #f9f9f9", transition: "background 0.1s" }}
+                          className="hover:bg-neutral-50 rounded"
+                        >
+                          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#333", fontWeight: 500 }}>{j.name}</p>
+                          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#aaa" }}>{j.institution}</p>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
 
