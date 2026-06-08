@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Eye } from "lucide-react";
 import type { Article } from "../data/articles";
 import { Header } from "./Header";
 
@@ -193,6 +193,21 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
                   }}
                 >
                   {article.readTime}
+                </span>
+                <span style={{ color: "rgba(255,255,255,0.18)", fontSize: "14px" }}>
+                  ·
+                </span>
+                <span className="flex items-center gap-1">
+                  <Eye size={12} color="rgba(255,255,255,0.42)" />
+                  <span
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: "15px",
+                      color: "rgba(255,255,255,0.42)",
+                    }}
+                  >
+                    {article.views || 0}
+                  </span>
                 </span>
                 <Link
                   to={`/articulo/${article.slug}`}

@@ -115,12 +115,12 @@ export function HomePage() {
                 </p>
               </div>
               <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "15px", color: "#666", lineHeight: 1.55, marginBottom: "10px", fontStyle: "italic" }}>
-                Torres, E. (2024). La Simetría Oculta de las Redes Neuronales Celulares. CienciaEduc, 14(2), 42–62.
+                Torres, E. (2024). La Simetría Oculta de las Redes Neuronales Celulares. SaberUnerg, 14(2), 42–62.
               </p>
               <button
                 className="flex items-center gap-2 px-3 py-1.5 rounded"
                 style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#333", background: "#fff", border: "1px solid #e0e0e0", cursor: "pointer" }}
-                onClick={() => navigator.clipboard?.writeText("Torres, E. (2024). La Simetría Oculta de las Redes Neuronales Celulares. CienciaEduc, 14(2), 42–62.")}
+                onClick={() => navigator.clipboard?.writeText("Torres, E. (2024). La Simetría Oculta de las Redes Neuronales Celulares. SaberUnerg, 14(2), 42–62.")}
               >
                 Copiar Cita
               </button>

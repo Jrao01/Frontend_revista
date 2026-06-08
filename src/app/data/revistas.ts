@@ -20,7 +20,7 @@ export interface Revista {
 export const revistas: Revista[] = [
   {
     id: "cienciaeduc",
-    name: "CienciaEduc",
+    name: "SaberUnerg",
     description: "Nuestra revista insignia dedicada a la investigación empírica rigurosa, el pensamiento crítico y la difusión del conocimiento en biología, física, química y educación.",
     periodicity: "Semestral",
     issn: "2443-4256",

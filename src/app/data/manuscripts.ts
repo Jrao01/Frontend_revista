@@ -125,7 +125,7 @@ const mockManuscripts: Manuscript[] = [
       { status: "peer_review", date: "2025-01-25", actor: "Dra. Carmen Vidal", actorRole: "Editor", note: "Enviado a 2 revisores externos" },
       { status: "minor_revision", date: "2025-02-12", actor: "Dra. Carmen Vidal", actorRole: "Editor", note: "Revisión menor solicitada: expandir discusión y actualizar referencias" },
       { status: "accepted", date: "2025-02-20", actor: "Dra. Carmen Vidal", actorRole: "Editor", note: "Aceptado tras revisiones menores satisfactorias" },
-      { status: "published", date: "2025-03-01", actor: "Sistema CienciaEduc", actorRole: "Sistema", note: "Publicado con DOI permanente" },
+      { status: "published", date: "2025-03-01", actor: "Sistema SaberUnerg", actorRole: "Sistema", note: "Publicado con DOI permanente" },
     ],
   },
   {
@@ -347,9 +347,9 @@ export function getInitialManuscripts(): Manuscript[] {
 
 export const ALL_USERS = [
   { id: "u1", name: "Dr. Alejandro García", email: "investigador@demo.com", role: "investigador" as const, institution: "UNAM", joined: "2024-09-01", manuscripts: 5 },
-  { id: "u2", name: "Dra. Carmen Vidal", email: "editor@demo.com", role: "editor" as const, institution: "CienciaEduc", joined: "2023-01-15", manuscripts: 0 },
+  { id: "u2", name: "Dra. Carmen Vidal", email: "editor@demo.com", role: "editor" as const, institution: "SaberUnerg", joined: "2023-01-15", manuscripts: 0 },
   { id: "u3", name: "Dr. Marco Rinaldi", email: "jurado@demo.com", role: "jurado" as const, institution: "INFN Pisa", joined: "2023-06-10", manuscripts: 0 },
-  { id: "u4", name: "Admin CienciaEduc", email: "admin@demo.com", role: "admin" as const, institution: "CienciaEduc", joined: "2022-01-01", manuscripts: 0 },
+  { id: "u4", name: "Admin SaberUnerg", email: "admin@demo.com", role: "admin" as const, institution: "SaberUnerg", joined: "2022-01-01", manuscripts: 0 },
   { id: "u5", name: "Dra. Elena Petrova", email: "researcher2@external.com", role: "investigador" as const, institution: "Skoltech", joined: "2024-11-20", manuscripts: 1 },
   { id: "u6", name: "Dr. Sebastián Mora", email: "researcher3@external.com", role: "investigador" as const, institution: "Uniandes", joined: "2025-01-08", manuscripts: 1 },
   { id: "u7", name: "Dra. Fatima Al-Hassan", email: "researcher4@external.com", role: "investigador" as const, institution: "U. Jordania", joined: "2025-02-14", manuscripts: 1 },

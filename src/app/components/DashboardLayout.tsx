@@ -63,7 +63,7 @@ export function DashboardLayout({
             textDecoration: "none",
           }}
         >
-          CienciaEduc
+          SaberUnerg
         </Link>
         {/* Close button on mobile */}
         <button

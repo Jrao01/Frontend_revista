@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import AreaLineManagement from "../../features/dashboard/AreaLineManagement";
+import RevistasNavMenu from "../../features/dashboard/RevistasNavMenu";
 import {
   LayoutDashboard, Users, FileText, Settings, Star, TrendingUp,
-  ChevronDown, Shield, UserCheck, Edit3, Gavel, Eye, BookOpen, Plus, Search, Check, Download, Edit
+  ChevronDown, ChevronRight, Shield, UserCheck, Edit3, Gavel, Eye, BookOpen, Plus, Search, Check, Download, Edit, Calendar, AlertCircle, Loader2
 } from "lucide-react";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { useAuth, ROLE_CONFIG, type UserRole } from "../../context/AuthContext";
@@ -11,7 +12,7 @@ import { useManuscripts } from "../../context/ManuscriptContext";
 import { type Manuscript, type ManuscriptStatus, STATUS_CONFIG } from "../../data/manuscripts";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid } from "recharts";
 import { useEffect } from "react";
-import { api } from "../../api/api";
+import { api, BASE_URL } from "../../api/api";
 const ROLE_ICONS: Record<string, typeof Shield> = {
   admin: Shield,
   editor: Edit3,
@@ -79,11 +80,24 @@ export function AdminDashboard() {
   const [revistaArticulos, setRevistaArticulos] = useState<any[]>([]);
   const [revistaNumeros, setRevistaNumeros] = useState<any[]>([]);
   const [lineas, setLineas] = useState<any[]>([]);
+  const [areas, setAreas] = useState<any[]>([]);
+  const [programas, setProgramas] = useState<any[]>([]);
+  const [revistaAreaId, setRevistaAreaId] = useState<number | "">("");
+  const [revistaProgramaId, setRevistaProgramaId] = useState<number | "">("");
+  
+  // Hierarchical expand state
+  const [expandedRevistas, setExpandedRevistas] = useState<Set<number>>(new Set());
+  const [expandedVolumenes, setExpandedVolumenes] = useState<Set<number>>(new Set());
+  const [volumenesData, setVolumenesData] = useState<Record<number, any[]>>({});
+  const [numerosData, setNumerosData] = useState<Record<number, any[]>>({});
+  const [creatingVolumenFor, setCreatingVolumenFor] = useState<number | null>(null);
+  const [newVolumenNumero, setNewVolumenNumero] = useState("");
   
   // Modals / forms visibility
   const [showUserModal, setShowUserModal] = useState(false);
   const [showRevistaModal, setShowRevistaModal] = useState(false);
   const [showNumeroModal, setShowNumeroModal] = useState(false);
+  const [showVolumenModal, setShowVolumenModal] = useState(false);
   const [editingRevista, setEditingRevista] = useState<any | null>(null);
   const [notification, setNotification] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
 
@@ -107,6 +121,11 @@ export function AdminDashboard() {
     lineas_permitidas: [] as number[]
   });
 
+  const [volumenForm, setVolumenForm] = useState({
+    volumen: "",
+    anio: new Date().getFullYear().toString()
+  });
+
   const [numeroForm, setNumeroForm] = useState({
     volumen: "",
     numero: "",
@@ -115,6 +134,13 @@ export function AdminDashboard() {
     status: "futuro",
     fecha_publicacion: ""
   });
+
+  // For volumen modal - revista selector
+  const [volumenRevistaId, setVolumenRevistaId] = useState<number | "">("");
+
+  // For numero modal - revista + volumen selectors
+  const [numeroRevistaId, setNumeroRevistaId] = useState<number | "">("");
+  const [numeroVolumenes, setNumeroVolumenes] = useState<any[]>([]);
 
   const fetchUsers = async () => {
     try {
@@ -143,12 +169,30 @@ export function AdminDashboard() {
     }
   };
 
+  const fetchAreas = async () => {
+    try {
+      const data = await api.areas.fetchAll();
+      setAreas(data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchProgramas = async () => {
+    try {
+      const data = await api.programas.fetchAll();
+      setProgramas(data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const fetchRevistaDetails = async (revId: number) => {
     try {
       const articles = await api.articulos.fetchApproved(revId);
       setRevistaArticulos(articles);
-      const numbers = await api.revistas.fetchNumeros(revId);
-      setRevistaNumeros(numbers);
+      const volumes = await api.revistas.fetchVolumenes(revId);
+      setRevistaNumeros(volumes);
     } catch (e) {
       console.error(e);
     }
@@ -158,6 +202,8 @@ export function AdminDashboard() {
     fetchUsers();
     fetchRevistas();
     fetchLineas();
+    fetchAreas();
+    fetchProgramas();
   }, []);
 
   useEffect(() => {
@@ -171,6 +217,143 @@ export function AdminDashboard() {
     setTimeout(() => setNotification(null), 4000);
   };
 
+  const toggleRevista = async (revId: number) => {
+    const next = new Set(expandedRevistas);
+    if (next.has(revId)) {
+      next.delete(revId);
+    } else {
+      next.add(revId);
+      if (!volumenesData[revId]) {
+        try {
+          const data = await api.revistas.fetchVolumenes(revId);
+          setVolumenesData(prev => ({ ...prev, [revId]: Array.isArray(data) ? data : [] }));
+        } catch (e) {
+          setVolumenesData(prev => ({ ...prev, [revId]: [] }));
+        }
+      }
+    }
+    setExpandedRevistas(next);
+  };
+
+  const toggleVolumen = async (revId: number, volId: number) => {
+    const next = new Set(expandedVolumenes);
+    if (next.has(volId)) {
+      next.delete(volId);
+    } else {
+      next.add(volId);
+      if (!numerosData[volId]) {
+        try {
+          const res = await fetch(`${BASE_URL}/api/revistas/${revId}/volumenes/${volId}/numeros`, {
+            headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+          });
+          const json = await res.json();
+          setNumerosData(prev => ({ ...prev, [volId]: Array.isArray(json.data) ? json.data : Array.isArray(json) ? json : [] }));
+        } catch (e) {
+          setNumerosData(prev => ({ ...prev, [volId]: [] }));
+        }
+      }
+    }
+    setExpandedVolumenes(next);
+  };
+
+  const handleCreateVolumenInline = async (revId: number) => {
+    if (!newVolumenNumero) return;
+    try {
+      await fetch(`${BASE_URL}/api/revistas/${revId}/volumenes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` },
+        body: JSON.stringify({ numero_volumen: Number(newVolumenNumero) })
+      });
+      setNewVolumenNumero("");
+      setCreatingVolumenFor(null);
+      const data = await api.revistas.fetchVolumenes(revId);
+      setVolumenesData(prev => ({ ...prev, [revId]: Array.isArray(data) ? data : [] }));
+      showToast("success", "Volumen creado");
+    } catch (e: any) {
+      showToast("error", e.message || "Error al crear volumen");
+    }
+  };
+
+  const refreshRevistaVolumenes = async (revId: number) => {
+    try {
+      const data = await api.revistas.fetchVolumenes(revId);
+      setVolumenesData(prev => ({ ...prev, [revId]: Array.isArray(data) ? data : [] }));
+    } catch (e) {}
+  };
+
+  const fetchVolumenesForNumeroModal = async (revId: number) => {
+    try {
+      const data = await api.revistas.fetchVolumenes(revId);
+      setNumeroVolumenes(
+        (Array.isArray(data) ? data : []).map((v: any) => ({
+          numero_volumen: v.numero_volumen,
+          id: v.id
+        })).sort((a: any, b: any) => b.numero_volumen - a.numero_volumen)
+      );
+    } catch (e) {
+      setNumeroVolumenes([]);
+    }
+  };
+
+  const handleCreateVolumenModal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!volumenRevistaId) return;
+    try {
+      const res = await fetch(`${BASE_URL}/api/revistas/${volumenRevistaId}/volumenes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` },
+        body: JSON.stringify({ numero_volumen: parseInt(volumenForm.volumen) })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast("success", "Volumen creado exitosamente");
+        setShowVolumenModal(false);
+        setVolumenRevistaId("");
+        setVolumenForm({ volumen: "", anio: new Date().getFullYear().toString() });
+        if (expandedRevistas.has(volumenRevistaId)) {
+          refreshRevistaVolumenes(volumenRevistaId);
+        }
+      } else {
+        showToast("error", data.message || "Error al crear volumen");
+      }
+    } catch (err) {
+      showToast("error", "Error de conexión");
+    }
+  };
+
+  const handleCreateNumeroModal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!numeroRevistaId || !numeroForm.volumen) return;
+    try {
+      const res = await fetch(`${BASE_URL}/api/revistas/${numeroRevistaId}/volumenes/${numeroForm.volumen}/numeros`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${localStorage.getItem("token")}` },
+        body: JSON.stringify({
+          numero: parseInt(numeroForm.numero),
+          anio: parseInt(numeroForm.anio),
+          titulo_edicion: numeroForm.titulo_edicion,
+          status: numeroForm.status,
+          fecha_publicacion: numeroForm.fecha_publicacion || undefined
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast("success", "Número de revista creado exitosamente");
+        setShowNumeroModal(false);
+        setNumeroRevistaId("");
+        setNumeroVolumenes([]);
+        setNumeroForm({ volumen: "", numero: "", anio: new Date().getFullYear().toString(), titulo_edicion: "", status: "futuro", fecha_publicacion: "" });
+        if (expandedRevistas.has(numeroRevistaId)) {
+          refreshRevistaVolumenes(numeroRevistaId);
+        }
+      } else {
+        showToast("error", data.message || "Error al crear número");
+      }
+    } catch (err) {
+      showToast("error", "Error de conexión");
+    }
+  };
+
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData();
@@ -182,7 +365,7 @@ export function AdminDashboard() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/usuarios/crear-admin", {
+      const res = await fetch(`${BASE_URL}/api/usuarios/crear-admin`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -216,8 +399,8 @@ export function AdminDashboard() {
     e.preventDefault();
     const method = editingRevista ? "PUT" : "POST";
     const url = editingRevista 
-      ? `http://localhost:3000/api/revistas/${editingRevista.id}`
-      : "http://localhost:3000/api/revistas";
+      ? `${BASE_URL}/api/revistas/${editingRevista.id}`
+      : `${BASE_URL}/api/revistas`;
 
     try {
       const res = await fetch(url, {
@@ -240,6 +423,8 @@ export function AdminDashboard() {
           descripcion: "",
           lineas_permitidas: []
         });
+        setRevistaAreaId("");
+        setRevistaProgramaId("");
         fetchRevistas();
       } else {
         showToast("error", data.message || "Error al procesar revista");
@@ -252,7 +437,7 @@ export function AdminDashboard() {
   const handleDesactivarRevista = async (revId: number) => {
     if (!confirm("¿Está seguro de que desea desactivar esta revista? No podrá ser eliminada físicamente pero quedará inactiva.")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/revistas/${revId}/desactivar`, {
+      const res = await fetch(`${BASE_URL}/api/revistas/${revId}/desactivar`, {
         method: "PATCH",
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -273,7 +458,7 @@ export function AdminDashboard() {
     e.preventDefault();
     if (!selectedRevista) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/revistas/${selectedRevista.id}/numeros`, {
+      const res = await fetch(`${BASE_URL}/api/revistas/${selectedRevista.id}/volumenes/${numeroForm.volumen}/numeros`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -332,13 +517,6 @@ export function AdminDashboard() {
     }, {} as Record<string, number>)
   ).map(([name, value]) => ({ name: name.split(" ")[0], value }));
 
-  const monthlyData = [
-    { month: "Ene", submissions: 4, published: 2 },
-    { month: "Feb", submissions: 6, published: 3 },
-    { month: "Mar", submissions: 5, published: 4 },
-    { month: "Abr", submissions: 8, published: 2 },
-  ];
-
   const PIE_COLORS = ["#3ecf8e", "#6c8ebf", "#9b7fd4", "#e07b54", "#e8c55e", "#e05252"];
 
   const navItems = [
@@ -374,10 +552,10 @@ export function AdminDashboard() {
           {/* KPI cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
-              { label: "Total manuscritos", value: totalManuscripts, color: "#0b0b0b", sub: "+2 esta semana" },
-              { label: "Pendientes revisión", value: pendingCount, color: "#6c8ebf", sub: "Nuevos envíos" },
-              { label: "En revisión", value: inReviewCount, color: "#9b7fd4", sub: "Con editores/jurados" },
-              { label: "Publicados", value: publishedCount, color: "#3ecf8e", sub: "Artículos activos" },
+              { label: "Total manuscritos", value: totalManuscripts, color: "#0b0b0b" },
+              { label: "Pendientes revisión", value: pendingCount, color: "#6c8ebf" },
+              { label: "En revisión", value: inReviewCount, color: "#9b7fd4" },
+              { label: "Publicados", value: publishedCount, color: "#3ecf8e" },
             ].map((kpi) => (
               <div key={kpi.label} style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "6px", padding: "20px" }}>
                 <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: 600, color: kpi.color, lineHeight: 1, marginBottom: "6px" }}>
@@ -386,7 +564,6 @@ export function AdminDashboard() {
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 500, color: "#444", marginBottom: "3px" }}>
                   {kpi.label}
                 </p>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#bbb" }}>{kpi.sub}</p>
               </div>
             ))}
           </div>
@@ -592,7 +769,7 @@ export function AdminDashboard() {
                       <td style={{ padding: "12px 16px" }}>
                         {(u as any).cv ? (
                           <a
-                            href={`http://localhost:3000/${(u as any).cv}`}
+                            href={`${BASE_URL}/${(u as any).cv}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-800"
@@ -716,7 +893,7 @@ export function AdminDashboard() {
               Envíos y publicaciones mensuales
             </p>
             <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={monthlyData} barGap={4}>
+              <BarChart data={[]} barGap={4}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
                 <XAxis dataKey="month" tick={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fill: "#aaa" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fill: "#aaa" }} axisLine={false} tickLine={false} />
@@ -725,6 +902,9 @@ export function AdminDashboard() {
                 <Bar dataKey="published" name="Publicados" fill="#3ecf8e" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#999", textAlign: "center", marginTop: "12px" }}>
+              Los datos se mostrarán cuando haya actividad registrada
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-6">
@@ -768,249 +948,185 @@ export function AdminDashboard() {
       {/* REVISTAS */}
       {section === "revistas" && (
         <div className="flex flex-col gap-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#666" }}>
-              Administre las revistas científicas, ISSN, periodicidad y sus volúmenes.
+              Administre las revistas científicas, sus volúmenes y números.
             </p>
-            <button
-              onClick={() => {
-                setEditingRevista(null);
-                setRevistaForm({
-                  nombre: "",
-                  issn: "",
-                  periodicidad: "semestral",
-                  descripcion: "",
-                  lineas_permitidas: []
-                });
-                setShowRevistaModal(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2 rounded text-sm text-white bg-black hover:bg-neutral-800 transition"
-              style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, cursor: "pointer" }}
-            >
-              <Plus size={16} /> Nueva Revista
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setEditingRevista(null);
+                  setRevistaForm({ nombre: "", issn: "", periodicidad: "semestral", descripcion: "", lineas_permitidas: [] });
+                  setRevistaAreaId("");
+                  setRevistaProgramaId("");
+                  setShowRevistaModal(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2 rounded text-sm text-white bg-black hover:bg-neutral-800 transition"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, cursor: "pointer" }}
+              >
+                <Plus size={16} /> Nueva Revista
+              </button>
+              <button
+                onClick={() => {
+                  setVolumenRevistaId("");
+                  setVolumenForm({ volumen: "", anio: new Date().getFullYear().toString() });
+                  setShowVolumenModal(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2 rounded text-sm border border-neutral-200 text-neutral-700 hover:bg-neutral-50 transition"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, cursor: "pointer" }}
+              >
+                <Plus size={16} /> Nuevo Volumen
+              </button>
+              <button
+                onClick={() => {
+                  setNumeroRevistaId("");
+                  setNumeroVolumenes([]);
+                  setNumeroForm({ volumen: "", numero: "", anio: new Date().getFullYear().toString(), titulo_edicion: "", status: "futuro", fecha_publicacion: "" });
+                  setShowNumeroModal(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2 rounded text-sm border border-neutral-200 text-neutral-700 hover:bg-neutral-50 transition"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, cursor: "pointer" }}
+              >
+                <Plus size={16} /> Nuevo Número
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* List of Revistas */}
-            <div className="lg:col-span-2 flex flex-col gap-4">
-              <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "6px", overflow: "hidden" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid #f0f0f0", background: "#fafafa" }}>
-                      {["Nombre", "ISSN", "Periodicidad", "Estado", "Acciones"].map((h) => (
-                        <th
-                          key={h}
-                          style={{
-                            fontFamily: "'Inter', sans-serif",
-                            fontSize: "13px",
-                            fontWeight: 600,
-                            color: "#888",
-                            letterSpacing: "0.1em",
-                            textTransform: "uppercase",
-                            padding: "12px 16px",
-                            textAlign: "left",
-                          }}
-                        >
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {revistas.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} style={{ padding: "24px", textAlign: "center", color: "#aaa", fontFamily: "'Inter', sans-serif" }}>
-                          No hay revistas creadas aún.
-                        </td>
-                      </tr>
-                    ) : (
-                      revistas.map((r) => (
-                        <tr
-                          key={r.id}
-                          onClick={() => setSelectedRevista(r)}
-                          style={{
-                            borderBottom: "1px solid #f9f9f9",
-                            cursor: "pointer",
-                            background: selectedRevista?.id === r.id ? "#fcfcfc" : "none"
-                          }}
-                          className="hover:bg-neutral-50 transition"
-                        >
-                          <td style={{ padding: "12px 16px" }}>
-                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#333", fontWeight: 600 }}>{r.nombre}</span>
-                          </td>
-                          <td style={{ padding: "12px 16px" }}>
-                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#555" }}>{r.issn}</span>
-                          </td>
-                          <td style={{ padding: "12px 16px" }}>
-                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#777", textTransform: "capitalize" }}>{r.periodicidad}</span>
-                          </td>
-                          <td style={{ padding: "12px 16px" }}>
-                            <span
-                              style={{
-                                fontFamily: "'Inter', sans-serif",
-                                fontSize: "12px",
-                                fontWeight: 600,
-                                color: r.activo ? "#3ecf8e" : "#e05252",
-                                background: r.activo ? "rgba(62,207,142,0.1)" : "rgba(224,82,82,0.1)",
-                                padding: "2px 8px",
-                                borderRadius: "10px"
-                              }}
-                            >
-                              {r.activo ? "Activo" : "Inactivo"}
-                            </span>
-                          </td>
-                          <td style={{ padding: "12px 16px" }} onClick={(e) => e.stopPropagation()}>
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => {
-                                  setEditingRevista(r);
-                                  setRevistaForm({
-                                    nombre: r.nombre,
-                                    issn: r.issn || "",
-                                    periodicidad: r.periodicidad || "semestral",
-                                    descripcion: r.descripcion || "",
-                                    lineas_permitidas: Array.isArray(r.lineas_permitidas) ? r.lineas_permitidas : []
-                                  });
-                                  setShowRevistaModal(true);
-                                }}
-                                className="p-1 text-gray-500 hover:text-black hover:bg-neutral-100 rounded transition"
-                              >
-                                <Edit size={14} />
-                              </button>
-                              {r.activo && (
-                                <button
-                                  onClick={() => handleDesactivarRevista(r.id)}
-                                  className="px-2 py-1 text-xs font-semibold text-red-600 hover:bg-red-50 rounded transition"
-                                  style={{ fontFamily: "'Inter', sans-serif" }}
-                                >
-                                  Desactivar
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+          <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "6px", padding: "20px" }}>
+            <div className="flex items-center justify-between mb-4">
+              <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "17px", fontWeight: 600, color: "#0b0b0b" }}>
+                Estructura de Revistas
+              </h4>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#999" }}>
+                {revistas.length} revista(s)
+              </span>
+            </div>
+
+            {revistas.length === 0 ? (
+              <div className="text-center py-12" style={{ border: "1px dashed #e0e0e0", borderRadius: "6px" }}>
+                <BookOpen size={32} color="#ddd" style={{ margin: "0 auto 12px" }} />
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#999" }}>No hay revistas creadas aún</p>
               </div>
-            </div>
-
-            {/* Selected Revista Detail Panel */}
-            <div className="lg:col-span-1">
-              {selectedRevista ? (
-                <div style={{ background: "#fff", border: "1px solid #efefef", borderRadius: "6px", padding: "24px" }} className="flex flex-col gap-6">
-                  <div>
-                    <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", fontWeight: 600, color: "#0b0b0b", marginBottom: "4px" }}>
-                      {selectedRevista.nombre}
-                    </h4>
-                    <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold">
-                      ISSN: {selectedRevista.issn} · Periodicidad: {selectedRevista.periodicidad}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h5 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Descripción</h5>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#555", lineHeight: 1.6 }}>
-                      {selectedRevista.descripcion || "Sin descripción proporcionada."}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h5 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Líneas de Investigación Permitidas</h5>
-                    <div className="flex flex-wrap gap-1.5">
-                      {Array.isArray(selectedRevista.lineas_permitidas) && selectedRevista.lineas_permitidas.length > 0 ? (
-                        selectedRevista.lineas_permitidas.map((id: number) => {
-                          const matchingLinea = lineas.find(l => l.id === id);
-                          return (
-                            <span key={id} className="px-2.5 py-1 text-xs font-medium text-neutral-600 bg-neutral-100 rounded-full" style={{ fontFamily: "'Inter', sans-serif" }}>
-                              {matchingLinea ? matchingLinea.nombre : `Línea #${id}`}
-                            </span>
-                          );
-                        })
-                      ) : (
-                        <span className="text-xs text-gray-400 italic">Todas las líneas aceptadas</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <hr style={{ borderColor: "#f6f6f6" }} />
-
-                  {/* Volúmenes y Números */}
-                  <div>
-                    <div className="flex justify-between items-center mb-3">
-                      <h5 className="text-xs font-bold uppercase tracking-wider text-gray-400">Volúmenes / Números</h5>
-                      <button
-                        onClick={() => setShowNumeroModal(true)}
-                        className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800"
-                        style={{ fontFamily: "'Inter', sans-serif" }}
+            ) : (
+              <div className="flex flex-col gap-2">
+                {revistas.map((r) => {
+                  const isExpanded = expandedRevistas.has(r.id);
+                  const volumenes = volumenesData[r.id] || [];
+                  return (
+                    <div key={r.id} style={{ border: "1px solid #f0f0f0", borderRadius: "6px", overflow: "hidden" }}>
+                      {/* REVISTA ROW */}
+                      <div
+                        className="flex items-center gap-2 p-3 cursor-pointer"
+                        style={{ background: "#fafafa", borderBottom: isExpanded ? "1px solid #f0f0f0" : "none" }}
+                        onClick={() => toggleRevista(r.id)}
                       >
-                        <Plus size={12} /> Nuevo Número
-                      </button>
-                    </div>
+                        <div style={{ color: "#888", transition: "transform 0.15s", transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}>
+                          <ChevronRight size={14} />
+                        </div>
+                        <BookOpen size={14} color="#3ecf8e" />
+                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", fontWeight: 600, color: "#0b0b0b", flex: 1 }}>
+                          {r.nombre}
+                        </span>
+                        {r.issn && (
+                          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", color: "#bbb" }}>
+                            ISSN {r.issn}
+                          </span>
+                        )}
+                        <span style={{ fontSize: "12px", color: "#bbb" }}>
+                          {volumenes.length} volumen(es)
+                        </span>
+                        <span
+                          style={{
+                            fontSize: "11px", padding: "2px 8px", borderRadius: "10px", fontWeight: 600,
+                            color: r.activo !== false ? "#3ecf8e" : "#e05252",
+                            background: r.activo !== false ? "rgba(62,207,142,0.1)" : "rgba(224,82,82,0.1)",
+                          }}
+                        >
+                          {r.activo !== false ? "Activo" : "Inactivo"}
+                        </span>
+                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            onClick={() => {
+                              setEditingRevista(r);
+                              const lineasPermitidas = Array.isArray(r.lineas_permitidas) ? r.lineas_permitidas : [];
+                              setRevistaForm({ nombre: r.nombre, issn: r.issn || "", periodicidad: r.periodicidad || "semestral", descripcion: r.descripcion || "", lineas_permitidas: lineasPermitidas });
+                              if (lineasPermitidas.length > 0) {
+                                const firstLinea = lineas.find(l => l.id === lineasPermitidas[0]);
+                                if (firstLinea) {
+                                  setRevistaProgramaId(firstLinea.programa_id);
+                                  const prog = programas.find(p => p.id === firstLinea.programa_id);
+                                  if (prog) setRevistaAreaId(prog.area_id);
+                                }
+                              }
+                              setShowRevistaModal(true);
+                            }}
+                            className="p-1 rounded"
+                            style={{ background: "none", border: "none", cursor: "pointer", color: "#ccc" }}
+                            onMouseEnter={(e) => (e.currentTarget.style.color = "#666")}
+                            onMouseLeave={(e) => (e.currentTarget.style.color = "#ccc")}
+                            title="Editar revista"
+                          >
+                            <Edit size={12} />
+                          </button>
+                        </div>
+                      </div>
 
-                    <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
-                      {revistaNumeros.length === 0 ? (
-                        <p className="text-xs text-gray-400 italic">No se han registrado volúmenes ni números para esta revista.</p>
-                      ) : (
-                        revistaNumeros.map((n: any) => (
-                          <div key={n.id} className="p-3 rounded border border-neutral-100 bg-neutral-50 flex justify-between items-center">
-                            <div>
-                              <p className="text-sm font-semibold text-neutral-800" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                Vol. {n.volumen} - N° {n.numero} ({n.anio})
-                              </p>
-                              <p className="text-xs text-neutral-400" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                {n.titulo_edicion}
-                              </p>
-                            </div>
-                            <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                                n.status === 'publicado' ? 'text-green-700 bg-green-100' : 'text-amber-700 bg-amber-100'
-                              }`}
-                              style={{ fontFamily: "'Inter', sans-serif" }}
-                            >
-                              {n.status}
-                            </span>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-
-                  <hr style={{ borderColor: "#f6f6f6" }} />
-
-                  {/* Artículos Aprobados para publicar */}
-                  <div>
-                    <h5 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Manuscritos Aprobados Pendientes de Edición</h5>
-                    <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
-                      {revistaArticulos.length === 0 ? (
-                        <p className="text-xs text-gray-400 italic">No hay artículos aprobados pendientes para esta revista.</p>
-                      ) : (
-                        revistaArticulos.map((art: any) => (
-                          <div key={art.id} className="p-3 rounded border border-neutral-100 flex flex-col gap-1">
-                            <p className="text-sm font-semibold text-neutral-800 line-clamp-2" style={{ fontFamily: "'Playfair Display', serif" }}>
-                              {art.titulo_es}
+                      {/* VOLUMENES */}
+                      {isExpanded && (
+                        <div style={{ padding: "6px 12px 10px 36px" }}>
+                          {volumenes.length === 0 ? (
+                            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#ccc", padding: "8px 0", textAlign: "center" }}>
+                              Sin volúmenes
                             </p>
-                            <div className="flex justify-between items-center">
-                              <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">ID: {art.id}</span>
-                              <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider bg-emerald-50 px-2 py-0.5 rounded">Listo para volumen</span>
-                            </div>
-                          </div>
-                        ))
+                          ) : (
+                            volumenes.map((vol: any) => {
+                              const numeros = vol.numeros || [];
+                              return (
+                                <div key={vol.id} style={{ marginBottom: "1px" }}>
+                                  <div className="flex items-center gap-2 p-2 rounded" style={{ background: "#f8f8f8" }}>
+                                    <Calendar size={11} color="#888" />
+                                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 500, color: "#444", flex: 1 }}>
+                                      Volumen {vol.numero_volumen}
+                                    </span>
+                                    <span style={{ fontSize: "11px", color: "#ccc" }}>
+                                      {numeros.length} número(s)
+                                    </span>
+                                    <button
+                                      onClick={() => {
+                                        setNumeroRevistaId(r.id);
+                                        setNumeroForm({ volumen: vol.numero_volumen.toString(), numero: "", anio: new Date().getFullYear().toString(), titulo_edicion: "", status: "futuro", fecha_publicacion: "" });
+                                        setShowNumeroModal(true);
+                                      }}
+                                      className="text-[11px] font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-0.5"
+                                      style={{ fontFamily: "'Inter', sans-serif", cursor: "pointer" }}
+                                    >
+                                      <Plus size={10} /> Número
+                                    </button>
+                                  </div>
+                                  {numeros.length > 0 && (
+                                    <div style={{ paddingLeft: "22px", paddingBottom: "4px" }}>
+                                      {numeros.map((num: any) => (
+                                        <div key={num.id} className="flex items-center gap-2 py-1 px-2 rounded" onMouseEnter={(e) => (e.currentTarget.style.background = "#f8f8f8")} onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
+                                          <FileText size={10} color="#aaa" />
+                                          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "12px", color: "#555", flex: 1 }}>
+                                            Nº {num.numero} — {num.anio}
+                                            {num.titulo_edicion && <span style={{ color: "#999", marginLeft: "4px" }}>({num.titulo_edicion})</span>}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
                       )}
                     </div>
-                  </div>
-                </div>
-              ) : (
-                <div style={{ background: "#fafafa", border: "1px dashed #e8e8e8", borderRadius: "6px", padding: "48px 24px", textAlign: "center", color: "#bbb" }}>
-                  <BookOpen size={32} className="mx-auto mb-3 opacity-30" />
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px" }}>
-                    Seleccione una revista de la lista para ver sus detalles, volúmenes y manuscritos aprobados.
-                  </p>
-                </div>
-              )}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1045,9 +1161,32 @@ export function AdminDashboard() {
                 <textarea rows={3} value={revistaForm.descripcion} onChange={(e) => setRevistaForm({ ...revistaForm, descripcion: e.target.value })} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none", resize: "none", fontFamily: "'Inter', sans-serif" }} />
               </div>
               <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Área</label>
+                <select value={revistaAreaId} onChange={(e) => {
+                  const val = e.target.value ? Number(e.target.value) : "";
+                  setRevistaAreaId(val);
+                  setRevistaProgramaId("");
+                  setRevistaForm({ ...revistaForm, lineas_permitidas: [] });
+                }} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }}>
+                  <option value="">Seleccionar área...</option>
+                  {areas.filter(a => a.status !== false).map(a => <option key={a.id} value={a.id}>{a.nombre}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Programa</label>
+                <select value={revistaProgramaId} onChange={(e) => {
+                  const val = e.target.value ? Number(e.target.value) : "";
+                  setRevistaProgramaId(val);
+                  setRevistaForm({ ...revistaForm, lineas_permitidas: [] });
+                }} disabled={!revistaAreaId} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none", opacity: revistaAreaId ? 1 : 0.5 }}>
+                  <option value="">Seleccionar programa...</option>
+                  {programas.filter(p => p.area_id === revistaAreaId && p.status !== false).map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
+                </select>
+              </div>
+              <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Líneas de Investigación Permitidas</label>
                 <div style={{ maxHeight: "140px", overflowY: "auto", border: "1px solid #e8e8e8", borderRadius: "4px", padding: "10px" }} className="grid grid-cols-2 gap-2">
-                  {lineas.map((l) => {
+                  {lineas.filter(l => revistaProgramaId && l.programa_id === revistaProgramaId && l.status !== false).map((l) => {
                     const isChecked = revistaForm.lineas_permitidas.includes(l.id);
                     return (
                       <label key={l.id} className="flex items-center gap-2 text-sm text-neutral-700 cursor-pointer" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -1065,10 +1204,13 @@ export function AdminDashboard() {
                       </label>
                     );
                   })}
+                  {(!revistaProgramaId || lineas.filter(l => l.programa_id === revistaProgramaId && l.status !== false).length === 0) && (
+                    <p className="text-xs text-gray-400 col-span-2">{!revistaAreaId ? "Selecciona un área y programa primero" : "No hay líneas disponibles para este programa"}</p>
+                  )}
                 </div>
               </div>
               <div className="flex justify-end gap-2 mt-4">
-                <button type="button" onClick={() => { setShowRevistaModal(false); setEditingRevista(null); }} style={{ padding: "8px 16px", border: "1px solid #e8e8e8", borderRadius: "4px", cursor: "pointer", background: "none" }}>Cancelar</button>
+                <button type="button" onClick={() => { setShowRevistaModal(false); setEditingRevista(null); setRevistaAreaId(""); setRevistaProgramaId(""); }} style={{ padding: "8px 16px", border: "1px solid #e8e8e8", borderRadius: "4px", cursor: "pointer", background: "none" }}>Cancelar</button>
                 <button type="submit" style={{ padding: "8px 20px", background: "#0b0b0b", color: "#fff", borderRadius: "4px", cursor: "pointer", border: "none" }}>
                   {editingRevista ? "Guardar Cambios" : "Crear Revista"}
                 </button>
@@ -1078,25 +1220,61 @@ export function AdminDashboard() {
         </div>
       )}
 
-      {/* Numero / Volumen Form Modal */}
+      {/* Volumen Form Modal */}
+      {showVolumenModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ background: "#fff", padding: "32px", borderRadius: "8px", width: "100%", maxWidth: "400px", boxShadow: "0 10px 25px rgba(0,0,0,0.2)" }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 600, marginBottom: "20px" }}>Crear Nuevo Volumen</h3>
+            <form onSubmit={handleCreateVolumenModal} className="flex flex-col gap-4">
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Revista</label>
+                <select required value={volumenRevistaId} onChange={(e) => setVolumenRevistaId(e.target.value ? Number(e.target.value) : "")} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }}>
+                  <option value="">Seleccionar revista...</option>
+                  {revistas.filter(r => r.activo !== false).map(r => <option key={r.id} value={r.id}>{r.nombre}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Número de Volumen (Ej: 1)</label>
+                <input required type="number" min="1" value={volumenForm.volumen} onChange={(e) => setVolumenForm({ ...volumenForm, volumen: e.target.value })} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }} />
+              </div>
+              <div className="flex justify-end gap-2 mt-4">
+                <button type="button" onClick={() => { setShowVolumenModal(false); setVolumenRevistaId(""); }} style={{ padding: "8px 16px", border: "1px solid #e8e8e8", borderRadius: "4px", cursor: "pointer", background: "none" }}>Cancelar</button>
+                <button type="submit" style={{ padding: "8px 20px", background: "#0b0b0b", color: "#fff", borderRadius: "4px", cursor: "pointer", border: "none" }}>Crear Volumen</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Numero Form Modal */}
       {showNumeroModal && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "#fff", padding: "32px", borderRadius: "8px", width: "100%", maxWidth: "500px", boxShadow: "0 10px 25px rgba(0,0,0,0.2)" }}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 600, marginBottom: "20px" }}>Crear Nuevo Volumen/Número</h3>
-            <form onSubmit={handleCreateNumero} className="flex flex-col gap-4">
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Volumen</label>
-                  <input required type="number" value={numeroForm.volumen} onChange={(e) => setNumeroForm({ ...numeroForm, volumen: e.target.value })} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }} />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Número</label>
-                  <input required type="number" value={numeroForm.numero} onChange={(e) => setNumeroForm({ ...numeroForm, numero: e.target.value })} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }} />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Año</label>
-                  <input required type="number" value={numeroForm.anio} onChange={(e) => setNumeroForm({ ...numeroForm, anio: e.target.value })} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }} />
-                </div>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 600, marginBottom: "20px" }}>Crear Nuevo Número</h3>
+            <form onSubmit={handleCreateNumeroModal} className="flex flex-col gap-4">
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Revista</label>
+                <select required value={numeroRevistaId} onChange={(e) => {
+                  const val = e.target.value ? Number(e.target.value) : "";
+                  setNumeroRevistaId(val);
+                  setNumeroForm({ ...numeroForm, volumen: "" });
+                  if (val) fetchVolumenesForNumeroModal(val);
+                  else setNumeroVolumenes([]);
+                }} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }}>
+                  <option value="">Seleccionar revista...</option>
+                  {revistas.filter(r => r.activo !== false).map(r => <option key={r.id} value={r.id}>{r.nombre}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Volumen</label>
+                <select required value={numeroForm.volumen} onChange={(e) => setNumeroForm({ ...numeroForm, volumen: e.target.value })} disabled={!numeroRevistaId} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none", opacity: numeroRevistaId ? 1 : 0.5 }}>
+                  <option value="">Seleccionar volumen...</option>
+                  {numeroVolumenes.map((v: any) => <option key={v.numero_volumen} value={v.numero_volumen}>Volumen {v.numero_volumen}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Número (Issue)</label>
+                <input required type="number" min="1" value={numeroForm.numero} onChange={(e) => setNumeroForm({ ...numeroForm, numero: e.target.value })} placeholder="Ej: 1" style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }} />
               </div>
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Título de la Edición</label>
@@ -1104,19 +1282,23 @@ export function AdminDashboard() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
+                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Año</label>
+                  <input required type="number" value={numeroForm.anio} onChange={(e) => setNumeroForm({ ...numeroForm, anio: e.target.value })} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }} />
+                </div>
+                <div>
                   <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Estado</label>
                   <select value={numeroForm.status} onChange={(e) => setNumeroForm({ ...numeroForm, status: e.target.value })} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none" }}>
                     <option value="futuro">Futuro (Planificado)</option>
                     <option value="publicado">Publicado</option>
                   </select>
                 </div>
-                <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Fecha Publicación (Opcional)</label>
-                  <input type="date" value={numeroForm.fecha_publicacion} onChange={(e) => setNumeroForm({ ...numeroForm, fecha_publicacion: e.target.value })} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none", fontFamily: "'Inter', sans-serif" }} />
-                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Fecha Publicación (Opcional)</label>
+                <input type="date" value={numeroForm.fecha_publicacion} onChange={(e) => setNumeroForm({ ...numeroForm, fecha_publicacion: e.target.value })} style={{ width: "100%", padding: "8px 12px", border: "1px solid #e8e8e8", borderRadius: "4px", outline: "none", fontFamily: "'Inter', sans-serif" }} />
               </div>
               <div className="flex justify-end gap-2 mt-4">
-                <button type="button" onClick={() => setShowNumeroModal(false)} style={{ padding: "8px 16px", border: "1px solid #e8e8e8", borderRadius: "4px", cursor: "pointer", background: "none" }}>Cancelar</button>
+                <button type="button" onClick={() => { setShowNumeroModal(false); setNumeroRevistaId(""); setNumeroVolumenes([]); }} style={{ padding: "8px 16px", border: "1px solid #e8e8e8", borderRadius: "4px", cursor: "pointer", background: "none" }}>Cancelar</button>
                 <button type="submit" style={{ padding: "8px 20px", background: "#0b0b0b", color: "#fff", borderRadius: "4px", cursor: "pointer", border: "none" }}>Crear Número</button>
               </div>
             </form>

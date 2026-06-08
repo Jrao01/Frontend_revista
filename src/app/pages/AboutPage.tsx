@@ -2,14 +2,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Mail, Globe, BookOpen } from "lucide-react";
 
-const editors = [
-  { name: "Dra. Elena Torres", role: "Editora en Jefe", institution: "UNAM, Ciudad de México", area: "Neurobiología" },
-  { name: "Dr. Carlos Mendoza", role: "Editor Asociado — Física", institution: "CINVESTAV, México", area: "Astrofísica" },
-  { name: "Dra. María López", role: "Editora Asociada — Biología", institution: "IBMB-CSIC, Barcelona", area: "Biología Molecular" },
-  { name: "Dr. Javier Ruiz", role: "Editor Asociado — Química", institution: "ETH Zúrich", area: "Química Cuántica" },
-  { name: "Dra. Elena Rostros", role: "Editora Asociada — Metodología", institution: "UAM, Madrid", area: "Psicometría" },
-  { name: "Dr. Arturo Méndez", role: "Editor Asociado — Educación", institution: "UBA, Buenos Aires", area: "Ciencias Sociales" },
-];
+
 
 const stats = [
   { stat: "2018", label: "Año de fundación" },
@@ -45,7 +38,7 @@ export function AboutPage() {
               marginBottom: "16px",
             }}
           >
-            Acerca de la Revista
+            Acerca de la Nosotros
           </p>
           <h1
             style={{
@@ -58,7 +51,7 @@ export function AboutPage() {
               marginBottom: "18px",
             }}
           >
-            CienciaEduc
+            SaberUnerg
           </h1>
           <p
             style={{
@@ -122,7 +115,7 @@ export function AboutPage() {
                 lineHeight: 1.85,
               }}
             >
-              CienciaEduc nació con la convicción de que la ciencia de calidad
+              SaberUnerg nació con la convicción de que la ciencia de calidad
               debe ser accesible para todos. Publicamos investigación original,
               revisiones sistemáticas y ensayos críticos en todas las
               disciplinas científicas, con énfasis en la comunidad
@@ -214,99 +207,6 @@ export function AboutPage() {
         </div>
 
         {/* Editorial board */}
-        <div className="mb-16">
-          <h2
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "28px",
-              fontWeight: 600,
-              color: "#0b0b0b",
-              letterSpacing: "-0.01em",
-              marginBottom: "4px",
-            }}
-          >
-            Consejo Editorial
-          </h2>
-          <p
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "15px",
-              color: "#aaa",
-              fontStyle: "italic",
-              marginBottom: "28px",
-            }}
-          >
-            Editorial Board
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {editors.map((editor) => (
-              <div
-                key={editor.name}
-                className="p-5 rounded"
-                style={{ border: "1px solid #ebebeb" }}
-              >
-                <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center mb-4"
-                  style={{ background: "#f5f5f5" }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "'Playfair Display', serif",
-                      fontSize: "18px",
-                      fontWeight: 600,
-                      color: "#888",
-                    }}
-                  >
-                    {editor.name
-                      .replace(/^(Dr\.|Dra\.)\s/, "")
-                      .split(" ")[0]?.[0] || "E"}
-                  </span>
-                </div>
-                <h3
-                  style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: "16px",
-                    fontWeight: 600,
-                    color: "#0b0b0b",
-                    marginBottom: "3px",
-                  }}
-                >
-                  {editor.name}
-                </h3>
-                <p
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: "14px",
-                    color: "#3ecf8e",
-                    fontWeight: 500,
-                    marginBottom: "4px",
-                  }}
-                >
-                  {editor.role}
-                </p>
-                <p
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: "14px",
-                    color: "#aaa",
-                    marginBottom: "2px",
-                  }}
-                >
-                  {editor.institution}
-                </p>
-                <p
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: "14px",
-                    color: "#ccc",
-                  }}
-                >
-                  {editor.area}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Contact */}
         <div

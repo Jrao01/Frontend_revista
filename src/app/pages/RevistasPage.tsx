@@ -1,202 +1,166 @@
+import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Link } from "react-router";
-import { revistas } from "../data/revistas";
-import { BookOpen, Calendar, Key, ArrowRight } from "lucide-react";
-import { motion } from "motion/react";
+import { api } from "../api/api";
+import { BookOpen, ArrowRight, Loader2, AlertCircle, Eye, Download } from "lucide-react";
+
+interface Volumen {
+  id: number;
+  numero_volumen: number;
+}
+
+interface Revista {
+  id: number;
+  nombre: string;
+  issn?: string;
+  periodicidad?: string;
+  descripcion?: string;
+  activo?: boolean;
+  portada?: string;
+  volumenes?: Volumen[];
+}
 
 export function RevistasPage() {
+  const [revistas, setRevistas] = useState<Revista[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [stats, setStats] = useState<Record<number, { totalViews: number; totalDownloads: number }>>({});
+
+  const fetchRevistas = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await api.revistas.fetchAll();
+      const revistasData = Array.isArray(data) ? data : [];
+      setRevistas(revistasData);
+
+      const statsPromises = revistasData.map(async (revista: Revista) => {
+        try {
+          const statsData = await api.statsContent.getRevistaStats(revista.id);
+          return { id: revista.id, stats: statsData };
+        } catch {
+          return { id: revista.id, stats: { totalViews: 0, totalDownloads: 0 } };
+        }
+      });
+
+      const statsResults = await Promise.all(statsPromises);
+      const statsMap: Record<number, { totalViews: number; totalDownloads: number }> = {};
+      statsResults.forEach(({ id, stats: s }) => {
+        statsMap[id] = { totalViews: s.totalViews || 0, totalDownloads: s.totalDownloads || 0 };
+      });
+      setStats(statsMap);
+    } catch (err: any) {
+      setError("Error al cargar revistas: " + (err.message || err));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRevistas();
+  }, []);
+
   return (
     <div style={{ background: "#ffffff", minHeight: "100vh" }}>
       <Header theme="light" />
 
-      {/* Page Header */}
-      <div
-        className="border-b"
-        style={{
-          borderColor: "#f0f0f0",
-          background: "#fafafa",
-          paddingTop: "60px",
-          paddingBottom: "60px",
-        }}
-      >
+      <div className="border-b" style={{ borderColor: "#f0f0f0", background: "#fafafa", paddingTop: "60px", paddingBottom: "60px" }}>
         <div className="max-w-[1200px] mx-auto px-6">
-          <p
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "13px",
-              fontWeight: 600,
-              color: "#3ecf8e",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              marginBottom: "12px",
-            }}
-          >
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", fontWeight: 600, color: "#3ecf8e", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "12px" }}>
             Índice de Revistas Científicas
           </p>
-          <h1
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "38px",
-              fontWeight: 600,
-              color: "#0b0b0b",
-              letterSpacing: "-0.02em",
-              marginBottom: "8px",
-            }}
-          >
+          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "38px", fontWeight: 600, color: "#0b0b0b", letterSpacing: "-0.02em", marginBottom: "8px" }}>
             Nuestras Revistas
           </h1>
-          <p
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "16px",
-              color: "#888",
-              maxWidth: "580px",
-              lineHeight: 1.5,
-            }}
-          >
-            Explora las distintas publicaciones periódicas, indexadas y de acceso abierto especializadas en ciencias empíricas, salud y pedagogía académica.
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#888", maxWidth: "580px", lineHeight: 1.5 }}>
+            Explora las diferentes publicaciones periódicas, conoce su periodicidad y revisa cuántos volúmenes tienen disponibles.
           </p>
         </div>
       </div>
 
-      {/* Journals List */}
       <div className="max-w-[1200px] mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {revistas.map((revista, idx) => {
-            const numVolumes = revista.volumes.length;
-            const totalArticles = revista.volumes.reduce(
-              (acc, v) => acc + v.articleIds.length,
-              0
-            );
-
-            return (
-              <motion.div
-                key={revista.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: idx * 0.1 }}
-                className="group flex flex-col rounded-lg overflow-hidden"
-                style={{
-                  border: "1px solid #ebebeb",
-                  background: "#ffffff",
-                  boxShadow: "0 2px 14px rgba(0,0,0,0.02)",
-                  transition: "box-shadow 0.2s, transform 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.06)";
-                  e.currentTarget.style.transform = "translateY(-4px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "0 2px 14px rgba(0,0,0,0.02)";
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                {/* Cover Image */}
-                <div style={{ height: "180px", width: "100%", background: "#f0f0f0", overflow: "hidden", position: "relative" }}>
-                  <img
-                    src={revista.coverImage}
-                    alt={revista.name}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s" }}
-                    className="group-hover:scale-105"
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: "12px",
-                      left: "12px",
-                      background: "rgba(11,11,11,0.85)",
-                      color: "#fff",
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      letterSpacing: "0.06em",
-                      textTransform: "uppercase",
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    ISSN {revista.issn}
+        {loading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 size={28} color="#888" className="animate-spin" />
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888", marginLeft: "12px" }}>Cargando revistas...</span>
+          </div>
+        ) : error ? (
+          <div className="flex items-center gap-2 p-4 rounded" style={{ background: "rgba(224,82,82,0.08)", border: "1px solid rgba(224,82,82,0.2)" }}>
+            <AlertCircle size={16} color="#e05252" />
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#e05252" }}>{error}</span>
+          </div>
+        ) : revistas.length === 0 ? (
+          <div className="text-center py-20 rounded-lg border border-dashed border-gray-300 bg-white">
+            <BookOpen size={36} color="#ccc" style={{ margin: "0 auto 16px" }} />
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#666" }}>
+              No hay revistas disponibles en este momento.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+            {revistas.map((revista) => (
+              <div key={revista.id} className="rounded-3xl border border-[#e8e8e8] bg-white shadow-sm transition hover:shadow-md overflow-hidden">
+                <Link to={`/revistas/${revista.id}`} style={{ textDecoration: "none" }}>
+                  <div className="relative" style={{ height: "200px", background: "#0b0b0b" }}>
+                    {revista.portada ? (
+                      <img
+                        src={revista.portada.startsWith("http") ? revista.portada : `http://localhost:3000${revista.portada}`}
+                        alt={revista.nombre}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1a1a2e, #16213e)" }}>
+                        <BookOpen size={48} color="#3ecf8e" />
+                      </div>
+                    )}
                   </div>
-                </div>
+                </Link>
 
-                {/* Content */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h2
-                      style={{
-                        fontFamily: "'Playfair Display', serif",
-                        fontSize: "24px",
-                        fontWeight: 600,
-                        color: "#0b0b0b",
-                        marginBottom: "10px",
-                        letterSpacing: "-0.01em",
-                      }}
-                    >
-                      {revista.name}
+                <div className="p-6">
+                  <Link to={`/revistas/${revista.id}`} style={{ textDecoration: "none" }}>
+                    <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 700, color: "#111", marginBottom: "8px" }}>
+                      {revista.nombre}
                     </h2>
-                    <p
-                      style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "15px",
-                        color: "#666",
-                        lineHeight: 1.6,
-                        marginBottom: "20px",
-                        minHeight: "72px",
-                      }}
-                    >
-                      {revista.description}
-                    </p>
+                  </Link>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#666", lineHeight: 1.7, minHeight: "48px" }}>
+                    {revista.descripcion || "Descripción no disponible."}
+                  </p>
+
+                  <div className="mt-5 grid gap-2.5 text-sm text-[#555]">
+                    <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-2.5">
+                      <span>Volúmenes</span>
+                      <strong>{revista.volumenes?.length ?? 0}</strong>
+                    </div>
+                    <div className="flex items-center justify-between border-b border-[#f0f0f0] py-2.5">
+                      <span>Periodicidad</span>
+                      <strong>{revista.periodicidad || "-"}</strong>
+                    </div>
+                    <div className="flex items-center justify-between border-b border-[#f0f0f0] py-2.5">
+                      <span>ISSN</span>
+                      <strong>{revista.issn || "-"}</strong>
+                    </div>
+                    <div className="flex items-center justify-between border-b border-[#f0f0f0] py-2.5">
+                      <span className="flex items-center gap-1.5"><Eye size={14} /> Vistas</span>
+                      <strong>{stats[revista.id]?.totalViews ?? 0}</strong>
+                    </div>
+                    <div className="flex items-center justify-between pt-2.5">
+                      <span className="flex items-center gap-1.5"><Download size={14} /> Descargas</span>
+                      <strong>{stats[revista.id]?.totalDownloads ?? 0}</strong>
+                    </div>
                   </div>
 
-                  {/* Metadata Row */}
-                  <div style={{ borderTop: "1px solid #f2f2f2", paddingTop: "16px" }}>
-                    <div className="flex justify-between items-center gap-4 mb-4">
-                      <div className="flex items-center gap-1.5" style={{ color: "#888" }}>
-                        <Calendar size={14} />
-                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px" }}>
-                          {revista.periodicity}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5" style={{ color: "#888" }}>
-                        <BookOpen size={14} />
-                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px" }}>
-                          {numVolumes} Vol. ({totalArticles} art.)
-                        </span>
-                      </div>
-                    </div>
-
-                    <Link
-                      to={`/revistas/${revista.id}`}
-                      className="flex items-center justify-between w-full px-4 py-2.5 rounded"
-                      style={{
-                        background: "#f5f5f5",
-                        color: "#0b0b0b",
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "15px",
-                        fontWeight: 600,
-                        textDecoration: "none",
-                        transition: "all 0.2s",
-                        textAlign: "center" as const,
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#0b0b0b";
-                        e.currentTarget.style.color = "#ffffff";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#f5f5f5";
-                        e.currentTarget.style.color = "#0b0b0b";
-                      }}
-                    >
-                      <span>Ver Volúmenes</span>
-                      <ArrowRight size={14} />
+                  <div className="mt-5 flex items-center justify-between text-sm font-semibold">
+                    <Link to={`/revistas/${revista.id}`} style={{ color: "#111", textDecoration: "none" }}>
+                      Ver revista
                     </Link>
+                    <ArrowRight size={18} />
                   </div>
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <Footer />

@@ -69,7 +69,7 @@ export function ArchivesPage() {
               marginBottom: "20px",
             }}
           >
-            Complete publication archive — CienciaEduc Journal
+            Complete publication archive — SaberUnerg Journal
           </p>
 
           {/* Search + filter row */}

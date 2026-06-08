@@ -12,8 +12,8 @@ export default defineConfig({
   ],
 
   server: {
-    port: 3000,       // Cambiamos el puerto para evitar los puertos excluidos de Windows (Hyper-V)
-    host: '127.0.0.1', // Forzamos IPv4
-    strictPort: false, // Permitir buscar otro puerto si este está ocupado
+    port: process.env.PORT ? parseInt(process.env.PORT) : 5173,
+    host: '0.0.0.0',
+    strictPort: false,
   }
 })

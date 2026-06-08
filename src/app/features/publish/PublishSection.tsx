@@ -32,7 +32,7 @@ export function PublishSection() {
 
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 600, color: "#ffffff", lineHeight: 1.15, letterSpacing: "-0.02em", marginBottom: "18px" }}>
               Publica tu investigación en{" "}
-              <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.65)" }}>CienciaEduc</span>
+              <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.65)" }}>SaberUnerg</span>
             </h2>
 
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "17px", color: "rgba(255,255,255,0.45)", lineHeight: 1.75, marginBottom: "28px", maxWidth: "460px" }}>

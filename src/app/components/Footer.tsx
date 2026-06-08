@@ -17,14 +17,14 @@ export function Footer() {
               textTransform: "uppercase",
             }}
           >
-            © 2024 CIENCIAEDUC. AN EMPIRICAL PUBLICATION FOR GLOBAL SCIENCE.
+            © 2026 saberunerg. PUBLICACION DE INFORMACION EMPIRICA.
           </p>
           <div className="flex items-center gap-6">
             {[
-              { label: "EDITORIAL POLICY", path: "/politica-editorial" },
-              { label: "CITATION TOOLS", path: "/herramientas-cita" },
-              { label: "OPEN ACCESS", path: "/acceso-abierto" },
-              { label: "CONTACT", path: "/contacto" },
+              { label: "INICIO", path: "/" },
+              { label: "ACERCA DE", path: "/acerca" },
+              { label: "REVISTAS", path: "/revistas" },
+              { label: "GUÍA", path: "/guia" },
             ].map((item) => (
               <Link
                 key={item.path}

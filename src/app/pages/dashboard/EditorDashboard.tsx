@@ -8,6 +8,7 @@ import { DashboardLayout } from "../../components/DashboardLayout";
 import { useAuth } from "../../context/AuthContext";
 import { useManuscripts } from "../../context/ManuscriptContext";
 import { type Manuscript, type ManuscriptStatus, STATUS_CONFIG, NEXT_STATUS, ALL_USERS } from "../../data/manuscripts";
+import { BASE_URL } from "../../api/api";
 
 const JURADO_POOL = ALL_USERS.filter((u) => u.role === "jurado");
 
@@ -173,7 +174,7 @@ function ManuscriptDetail({
   // Fetch real files if the manuscript has a backend articuloId
   useEffect(() => {
     if ((manuscript as any).articuloId) {
-      fetch(`http://localhost:3000/api/articulos/${(manuscript as any).articuloId}`, {
+      fetch(`${BASE_URL}/api/articulos/${(manuscript as any).articuloId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((r) => r.ok ? r.json() : null)
@@ -188,7 +189,7 @@ function ManuscriptDetail({
     manuscrito_original: "Manuscrito Original",
     pagina_titulo: "Página de Título",
     ficha_autores: "Ficha de Autores",
-    material_suplementario: "Material Suplementario",
+    material_suplementario: "Material Complementario",
   };
 
   const statusActionLabels: Partial<Record<ManuscriptStatus, string>> = {
@@ -298,7 +299,7 @@ function ManuscriptDetail({
               realArchivos.map((archivo: any) => (
                 <a
                   key={archivo.id}
-                  href={`http://localhost:3000/${archivo.url}`}
+                  href={`${BASE_URL}/${archivo.url}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between p-3 rounded bg-white border border-neutral-100 hover:border-black transition"

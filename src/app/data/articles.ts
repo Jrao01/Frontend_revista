@@ -30,6 +30,7 @@ export interface Article {
   figureImage?: string;
   stat?: string;
   statLabel?: string;
+  views?: number;
 }
 
 export const articles: Article[] = [

@@ -19,12 +19,12 @@ export function GuiaPage() {
     {
       num: "01",
       title: "Selección de Destino",
-      desc: "Elige la revista adecuada para tu manuscrito (CienciaEduc, UNERG Salud o Ensayos Académicos) y selecciona tu programa y línea de investigación correspondientes.",
+      desc: "Elige la revista adecuada para tu manuscrito (SaberUnerg, UNERG Salud o Ensayos Académicos) y selecciona tu programa y línea de investigación correspondientes.",
     },
     {
       num: "02",
-      title: "Carga de Archivos Requeridos",
-      desc: "Prepara y sube todos los archivos indispensables para la postulación. Asegúrate de que el manuscrito principal esté completamente anonimizado.",
+      title: "Carga de Archivos y Declaraciones",
+      desc: "Sube los archivos requeridos (manuscrito anonimizado y página de título) y acepta las declaraciones de originalidad y ética directamente en el formulario.",
     },
     {
       num: "03",
@@ -54,25 +54,28 @@ export function GuiaPage() {
       whyNeeded: "Permite al equipo editorial realizar la correspondencia y el registro formal de metadatos, manteniéndolo separado del manuscrito que va a los jurados evaluadores.",
     },
     {
-      title: "Carta de Originalidad y Cesión",
-      required: true,
-      badgeColor: "#e05252",
-      desc: "Una carta formal firmada por el autor principal y todos los coautores declarando que el manuscrito es inédito, original y que no ha sido postulado simultáneamente en otras revistas.",
-      whyNeeded: "Es una salvaguarda ética que garantiza la exclusividad e integridad de la publicación científica y previene la duplicación de artículos en el ecosistema científico.",
-    },
-    {
-      title: "Certificado del Comité de Ética",
-      required: false,
-      badgeColor: "#888",
-      desc: "Documento probatorio emitido por el comité de ética institucional si tu estudio involucró experimentos con seres humanos, ensayos clínicos o sujetos animales.",
-      whyNeeded: "Obligatorio únicamente para investigaciones experimentales o aplicadas en salud y ciencias sociales, garantizando que se respetaron los principios bioéticos internacionales.",
-    },
-    {
       title: "Ficha de Autores y ORCIDs",
       required: false,
       badgeColor: "#888",
       desc: "Archivo adicional en formato Word o PDF donde se detalla la contribución específica de cada coautor utilizando la taxonomía CRediT, así como una breve reseña biográfica.",
       whyNeeded: "Ayuda a transparentar la contribución real de cada investigador en proyectos colaborativos multi-disciplinarios.",
+    },
+  ];
+
+  const declarationsNeeded = [
+    {
+      title: "Carta de Originalidad y Cesión",
+      required: true,
+      badgeColor: "#e05252",
+      desc: "Declaración bajo firma digital de que el manuscrito es inédito, original y que no ha sido postulado simultáneamente en otras revistas.",
+      whyNeeded: "Es una salvaguarda ética que garantiza la exclusividad e integridad de la publicación científica y previene la duplicación de artículos en el ecosistema científico.",
+    },
+    {
+      title: "Certificado del Comité de Ética",
+      required: true,
+      badgeColor: "#e05252",
+      desc: "Declaración bajo firma digital de que el estudio cumple con los lineamientos éticos internacionales para la investigación.",
+      whyNeeded: "Obligatorio para investigaciones experimentales o aplicadas en salud y ciencias sociales, garantizando que se respetaron los principios bioéticos internacionales.",
     },
   ];
 
@@ -373,6 +376,135 @@ export function GuiaPage() {
                       }}
                     >
                       {file.whyNeeded}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* Declaraciones Necesarias */}
+        <section className="mb-16">
+          <div className="flex items-center gap-2 mb-4">
+            <div style={{ width: "4px", height: "24px", background: "#e05252", borderRadius: "2px" }} />
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "28px",
+                fontWeight: 600,
+                color: "#0b0b0b",
+              }}
+            >
+              Declaraciones Obligatorias
+            </h2>
+          </div>
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "16px",
+              color: "#666",
+              marginBottom: "32px",
+              maxWidth: "700px",
+              lineHeight: 1.5,
+            }}
+          >
+            Además de los archivos, deberás aceptar las siguientes declaraciones directamente en el formulario de envío.
+          </p>
+
+          <div className="flex flex-col gap-6">
+            {declarationsNeeded.map((decl, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3 }}
+                className="p-6 rounded-lg"
+                style={{
+                  border: "1px solid #ebebeb",
+                  borderLeft: `4px solid ${decl.badgeColor}`,
+                  background: "#ffffff",
+                  boxShadow: "0 2px 12px rgba(0,0,0,0.02)",
+                }}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                  <h3
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      fontSize: "20px",
+                      fontWeight: 600,
+                      color: "#0b0b0b",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <CheckCircle size={18} color={decl.badgeColor} />
+                    {decl.title}
+                  </h3>
+                  <span
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: "11px",
+                      fontWeight: 700,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      padding: "2px 8px",
+                      borderRadius: "12px",
+                      background: "rgba(224,82,82,0.1)",
+                      color: "#e05252",
+                    }}
+                  >
+                    Obligatorio
+                  </span>
+                </div>
+
+                <p
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "15px",
+                    color: "#555",
+                    lineHeight: 1.6,
+                    marginBottom: "12px",
+                  }}
+                >
+                  {decl.desc}
+                </p>
+
+                <div
+                  className="p-4 rounded"
+                  style={{
+                    background: "#f9f9f9",
+                    border: "1px dashed #efefef",
+                    display: "flex",
+                    gap: "10px",
+                  }}
+                >
+                  <ShieldAlert size={16} style={{ color: "#888", marginTop: "2px", flexShrink: 0 }} />
+                  <div>
+                    <strong
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "13px",
+                        color: "#444",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.02em",
+                        display: "block",
+                        marginBottom: "2px",
+                      }}
+                    >
+                      ¿Por qué se solicita?
+                    </strong>
+                    <p
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "14px",
+                        color: "#777",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {decl.whyNeeded}
                     </p>
                   </div>
                 </div>

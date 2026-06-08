@@ -2,8 +2,9 @@ import { useState } from "react";
 import { X, Eye, EyeOff, Check, FlaskConical, BookOpen, Gavel, ShieldCheck } from "lucide-react";
 import { type UserProfile, DEMO_ACCOUNTS, ROLE_CONFIG } from "../context/AuthContext";
 import { useAuth } from "../context/AuthContext";
+import { BASE_URL } from "../api/api";
 
-const API = "http://localhost:3000/api";
+const API = `${BASE_URL}/api`;
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -98,6 +99,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
         return;
       }
       const userProfile: UserProfile = {
+        id: data.usuario.id,
         name: `${data.usuario.nombre} ${data.usuario.apellido ?? ""}`.trim(),
         email: data.usuario.correo,
         role: data.usuario.rol as any,
@@ -155,6 +157,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
       const loginData = await loginRes.json();
       if (loginRes.ok) {
         const userProfile: UserProfile = {
+          id: loginData.usuario.id,
           name: `${loginData.usuario.nombre} ${loginData.usuario.apellido ?? ""}`.trim(),
           email: loginData.usuario.correo,
           role: loginData.usuario.rol as any,
@@ -226,7 +229,7 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
                 {tab === "login" ? "Iniciar Sesión" : "Crear Cuenta"}
               </h2>
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "15px", color: "#888" }}>
-                {tab === "login" ? "Accede a CienciaEduc" : "Únete a la comunidad científica"}
+                {tab === "login" ? "Accede a SaberUnerg" : "Únete a la comunidad científica"}
               </p>
             </div>
             <button onClick={onClose} className="p-1 mt-0.5">
@@ -404,30 +407,19 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
                   <input type="text" value={regOncti} onChange={(e) => setRegOncti(e.target.value)} placeholder="ONCTI-00123" style={inputStyle} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label style={labelStyle}>Tipo de usuario</label>
-                  <select value={regRole} onChange={(e) => setRegRole(e.target.value)} style={inputStyle}>
-                    <option value="investigador">Investigador</option>
-                    <option value="editor">Editor</option>
-                    <option value="revisor">Revisor</option>
-                    <option value="admin">Administrador</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={labelStyle}>Contraseña <span style={{ color: "#c0392b" }}>*</span></label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      value={regPassword}
-                      onChange={(e) => setRegPassword(e.target.value)}
-                      placeholder="Mínimo 8 caracteres"
-                      style={{ ...inputStyle, paddingRight: "40px" }}
-                    />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
-                      {showPassword ? <EyeOff size={14} color="#888" /> : <Eye size={14} color="#888" />}
-                    </button>
-                  </div>
+              <div>
+                <label style={labelStyle}>Contraseña <span style={{ color: "#c0392b" }}>*</span></label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={regPassword}
+                    onChange={(e) => setRegPassword(e.target.value)}
+                    placeholder="Mínimo 8 caracteres"
+                    style={{ ...inputStyle, paddingRight: "40px" }}
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
+                    {showPassword ? <EyeOff size={14} color="#888" /> : <Eye size={14} color="#888" />}
+                  </button>
                 </div>
               </div>
               {regError && (
@@ -441,9 +433,6 @@ export function AuthModal({ isOpen, onClose, onLogin }: AuthModalProps) {
               >
                 {loading ? "Creando cuenta..." : "Crear Cuenta"}
               </button>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#999", textAlign: "center" }}>
-                Selecciona el rol que corresponde a tu perfil.
-              </p>
             </form>
           )}
         </div>

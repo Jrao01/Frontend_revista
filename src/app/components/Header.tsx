@@ -63,7 +63,7 @@ export function Header({ theme = "light" }: HeaderProps) {
               transition: "opacity 0.2s",
             }}
           >
-            CienciaEduc
+            SaberUnerg
           </span>
         </Link>
 

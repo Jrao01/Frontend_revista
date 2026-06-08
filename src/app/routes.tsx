@@ -1,7 +1,7 @@
 import { createBrowserRouter, Link } from "react-router";
 import { Root } from "./Root";
 // ── Public features ────────────────────────────────
-import { HomePage } from "./features/home/HomePage";
+import { HomePage } from "./pages/HomePage";
 import { ArticlePage } from "./features/article/ArticlePage";
 import { ArchivesPage } from "./features/archives/ArchivesPage";
 import { CategoryPage } from "./features/category/CategoryPage";
@@ -15,6 +15,7 @@ import { RevistasPage } from "./pages/RevistasPage";
 import { RevistaDetailPage } from "./pages/RevistaDetailPage";
 import { VolumeDetailPage } from "./pages/VolumeDetailPage";
 import { ArticulosPage } from "./pages/ArticulosPage";
+import { AuthorProfilePage } from "./pages/AuthorProfilePage";
 
 // ── Dashboard features ─────────────────────────────
 import { DashboardPage } from "./features/dashboard/DashboardPage";
@@ -63,6 +64,7 @@ export const router = createBrowserRouter([
       { path: "revistas", Component: RevistasPage },
       { path: "revistas/:id", Component: RevistaDetailPage },
       { path: "revistas/:id/volumen/:volumeId", Component: VolumeDetailPage },
+      { path: "autor/:id", Component: AuthorProfilePage },
 
       // ── Dashboards (feature folder) ──
       { path: "dashboard", Component: DashboardPage },

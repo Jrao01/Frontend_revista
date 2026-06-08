@@ -56,7 +56,7 @@ export function PublishSection() {
             >
               Publica tu investigación en{" "}
               <span style={{ fontStyle: "italic", color: "rgba(255,255,255,0.65)" }}>
-                CienciaEduc
+                SaberUnerg
               </span>
             </h2>
 

@@ -168,7 +168,7 @@ export function InfiniteArticleFeed({ articles }: InfiniteArticleFeedProps) {
       {!hasMore && displayed.length > 0 && (
         <div className="text-center" style={{ marginTop: "48px", paddingTop: "28px", borderTop: "1px solid #f0f0f0" }}>
           <p style={{ fontFamily: "'EB Garamond', serif", fontSize: "16px", fontStyle: "italic", color: "#bbb" }}>— Fin de las publicaciones disponibles —</p>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#ccc", marginTop: "6px", letterSpacing: "0.06em", textTransform: "uppercase" }}>Volumen 14 · CienciaEduc</p>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#ccc", marginTop: "6px", letterSpacing: "0.06em", textTransform: "uppercase" }}>Volumen 14 · SaberUnerg</p>
         </div>
       )}
     </div>

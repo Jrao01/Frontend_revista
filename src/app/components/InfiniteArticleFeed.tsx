@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { ReactElement } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Clock, BookOpen } from "lucide-react";
+import { ArrowRight, Clock, BookOpen, Eye } from "lucide-react";
 import type { Article } from "../data/articles";
 import { ArticleCardSkeleton, FeaturedArticleSkeleton } from "./ArticleSkeleton";
 
@@ -101,19 +101,8 @@ function ArticleCard({ article }: { article: Article }) {
         </p>
 
         {/* Meta */}
-        <div className="flex items-center gap-3">
-          <span
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "14px",
-              color: "#aaa",
-            }}
-          >
-            {article.authors[0].name.split(" ").slice(-1)[0]}, et al.
-          </span>
-          <span style={{ color: "#ddd", fontSize: "13px" }}>·</span>
-          <div className="flex items-center gap-1">
-            <Clock size={10} color="#bbb" />
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-3 flex-wrap">
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
@@ -121,19 +110,44 @@ function ArticleCard({ article }: { article: Article }) {
                 color: "#aaa",
               }}
             >
-              {article.readTime}
+              {article.authors[0].name.split(" ").slice(-1)[0]}, et al.
+            </span>
+            <span style={{ color: "#ddd", fontSize: "13px" }}>·</span>
+            <div className="flex items-center gap-1">
+              <Clock size={10} color="#bbb" />
+              <span
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "14px",
+                  color: "#aaa",
+                }}
+              >
+                {article.readTime}
+              </span>
+            </div>
+            <span style={{ color: "#ddd", fontSize: "13px" }}>·</span>
+            <span
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "14px",
+                color: "#aaa",
+              }}
+            >
+              {article.date}
             </span>
           </div>
-          <span style={{ color: "#ddd", fontSize: "13px" }}>·</span>
-          <span
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "14px",
-              color: "#aaa",
-            }}
-          >
-            {article.date}
-          </span>
+          <div className="flex items-center gap-1">
+            <Eye size={10} color="#bbb" />
+            <span
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "14px",
+                color: "#aaa",
+              }}
+            >
+              {article.views || 0}
+            </span>
+          </div>
         </div>
       </article>
     </Link>
@@ -221,7 +235,7 @@ function FeaturedFeedCard({ article }: { article: Article }) {
             {article.abstract}
           </p>
 
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex flex-col gap-2">
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
@@ -231,9 +245,8 @@ function FeaturedFeedCard({ article }: { article: Article }) {
             >
               {article.authors[0].name}
             </span>
-            <span style={{ color: "#ddd" }}>·</span>
             <div className="flex items-center gap-1">
-              <BookOpen size={10} color="#bbb" />
+              <Eye size={10} color="#bbb" />
               <span
                 style={{
                   fontFamily: "'Inter', sans-serif",
@@ -241,19 +254,33 @@ function FeaturedFeedCard({ article }: { article: Article }) {
                   color: "#999",
                 }}
               >
-                {article.readTime}
+                {article.views || 0} vistas
               </span>
             </div>
-            <div
-              className="flex items-center gap-1 ml-auto"
-              style={{
-                color: article.categoryColor,
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "14px",
-                fontWeight: 500,
-              }}
-            >
-              Leer <ArrowRight size={11} />
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-1">
+                <BookOpen size={10} color="#bbb" />
+                <span
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "14px",
+                    color: "#999",
+                  }}
+                >
+                  {article.readTime}
+                </span>
+              </div>
+              <div
+                className="flex items-center gap-1 ml-auto"
+                style={{
+                  color: article.categoryColor,
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                }}
+              >
+                Leer <ArrowRight size={11} />
+              </div>
             </div>
           </div>
         </div>
@@ -441,7 +468,7 @@ export function InfiniteArticleFeed({ articles }: InfiniteArticleFeedProps) {
               textTransform: "uppercase",
             }}
           >
-            Volumen 14 · CienciaEduc
+            Volumen 14 · SaberUnerg
           </p>
         </div>
       )}

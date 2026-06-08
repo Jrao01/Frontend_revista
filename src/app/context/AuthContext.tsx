@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 export type UserRole = "investigador" | "editor" | "revisor" | "admin" | null;
 
 export interface UserProfile {
+  id?: number;
   name: string;
   email: string;
   role: UserRole;
@@ -49,7 +50,7 @@ export const DEMO_ACCOUNTS: Record<string, UserProfile> = {
     name: "Dra. Carmen Vidal",
     email: "editor@demo.com",
     role: "editor",
-    institution: "CienciaEduc Editorial Board",
+    institution: "SaberUnerg Editorial Board",
   },
   "jurado@demo.com": {
     name: "Dr. Marco Rinaldi",
@@ -58,10 +59,10 @@ export const DEMO_ACCOUNTS: Record<string, UserProfile> = {
     institution: "INFN Sezione di Pisa",
   },
   "admin@demo.com": {
-    name: "Admin CienciaEduc",
+    name: "Admin SaberUnerg",
     email: "admin@demo.com",
     role: "admin",
-    institution: "CienciaEduc",
+    institution: "SaberUnerg",
   },
 };
 
