@@ -8,6 +8,30 @@ import { DashboardLayout } from "../../components/DashboardLayout";
 import { useAuth } from "../../context/AuthContext";
 import { api, BASE_URL } from "../../api/api";
 
+async function downloadFile(archivoId: number, filename: string) {
+  try {
+    const token = localStorage.getItem("token");
+    const resp = await fetch(`${BASE_URL}/api/descargar/${archivoId}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!resp.ok) {
+      const text = await resp.text();
+      throw new Error(text || "Error al descargar");
+    }
+    const blob = await resp.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err: any) {
+    alert(err.message || "No se pudo descargar el archivo");
+  }
+}
+
 const STATUS_MAP: Record<string, { label: string; color: string; bg: string }> = {
   enviado:         { label: "Enviado",         color: "#6c8ebf", bg: "rgba(108,142,191,0.1)" },
   asignado:        { label: "Asignado",        color: "#9b7fd4", bg: "rgba(155,127,212,0.1)" },
@@ -432,15 +456,15 @@ function ArticleDetail({ articulo, onBack, onRefresh }: { articulo: any; onBack:
                   {(openVersions[Number(version)] ?? true) && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {files.map((arch: any) => (
-                        <a
+                        <button
                           key={arch.id}
-                          href={`${BASE_URL}/api/descargar/${arch.id}`}
-                          className="flex items-center justify-between p-3 rounded bg-white border border-neutral-100 hover:border-black transition"
-                          style={{ textDecoration: "none", color: "#333", fontFamily: "'Inter', sans-serif", fontSize: "14px" }}
+                          onClick={() => downloadFile(arch.id, `${arch.tipo_archivo}-v${arch.version}.txt`)}
+                          className="flex items-center justify-between p-3 rounded bg-white border border-neutral-100 hover:border-black transition w-full text-left"
+                          style={{ color: "#333", fontFamily: "'Inter', sans-serif", fontSize: "14px", cursor: "pointer" }}
                         >
                           <span className="font-semibold text-neutral-700">{FILE_LABELS[arch.tipo_archivo] || arch.tipo_archivo}</span>
                           <Download size={14} className="text-neutral-400" />
-                        </a>
+                        </button>
                       ))}
                     </div>
                   )}
