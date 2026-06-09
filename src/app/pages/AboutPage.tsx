@@ -5,7 +5,7 @@ import { Mail, Globe, BookOpen } from "lucide-react";
 
 
 const stats = [
-  { stat: "2018", label: "Año de fundación" },
+  { stat: "2026", label: "Año de fundación" },
   { stat: "1,240+", label: "Artículos publicados" },
   { stat: "47", label: "Países representados" },
   { stat: "8 sem.", label: "Tiempo promedio de revisión" },
