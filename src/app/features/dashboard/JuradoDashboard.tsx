@@ -14,6 +14,30 @@ function downloadUrl(archivoId: number): string {
   return `${BASE_URL}/api/descargar/${archivoId}`;
 }
 
+async function downloadFile(archivoId: number, filename: string) {
+  try {
+    const token = localStorage.getItem("token");
+    const resp = await fetch(`${BASE_URL}/api/descargar/${archivoId}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!resp.ok) {
+      const text = await resp.text();
+      throw new Error(text || "Error al descargar");
+    }
+    const blob = await resp.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err: any) {
+    alert(err.message || "No se pudo descargar el archivo");
+  }
+}
+
 /* ─── List Item ────────────────────────────────────── */
 
 function AssignedListItem({
@@ -253,21 +277,20 @@ function ReviewDetail({
                 {(openVersions[Number(version)] ?? true) && (
                   <div className="flex flex-col gap-2">
                     {files.map((arch: any) => (
-                      <a
+                      <button
                         key={arch.id}
-                        href={downloadUrl(arch.id)}
-                        download
-                        className="flex items-center justify-between p-3 rounded"
+                        onClick={() => downloadFile(arch.id, `${arch.tipo_archivo}-v${arch.version}.txt`)}
+                        className="flex items-center justify-between p-3 rounded w-full text-left"
                         style={{
-                          textDecoration: "none", color: "#333", fontFamily: "'Inter', sans-serif", fontSize: "14px",
                           background: "#fafafa", border: "1px solid #f0f0f0",
+                          cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: "14px", color: "#333",
                         }}
                       >
                         <span className="font-semibold text-neutral-700">
                           {arch.es_anonimo ? "Manuscrito Anonimizado" : "Manuscrito"}
                         </span>
                         <Download size={14} color="#6c8ebf" />
-                      </a>
+                      </button>
                     ))}
                   </div>
                 )}
