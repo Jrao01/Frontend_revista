@@ -9,6 +9,30 @@ import { DashboardLayout } from "../../components/DashboardLayout";
 import { useAuth } from "../../context/AuthContext";
 import { api, BASE_URL } from "../../api/api";
 
+async function downloadFile(archivoId: number, filename: string) {
+  try {
+    const token = localStorage.getItem("token");
+    const resp = await fetch(`${BASE_URL}/api/descargar/${archivoId}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!resp.ok) {
+      const text = await resp.text();
+      throw new Error(text || "Error al descargar");
+    }
+    const blob = await resp.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err: any) {
+    alert(err.message || "No se pudo descargar el archivo");
+  }
+}
+
 const STATUS_MAP: Record<string, { label: string; color: string; bg: string; step: number }> = {
   enviado:         { label: "Enviado",         color: "#6c8ebf", bg: "rgba(108,142,191,0.1)",  step: 1 },
   asignado:        { label: "Asignado",        color: "#9b7fd4", bg: "rgba(155,127,212,0.1)",  step: 2 },
@@ -283,13 +307,13 @@ function ManuscriptDetail({ articulo, onBack, onRefresh }: { articulo: any; onBa
                             </p>
                           </div>
                         </div>
-                        <a
-                          href={`${BASE_URL}/api/descargar/${arch.id}`}
+                        <button
+                          onClick={() => downloadFile(arch.id, `${arch.tipo_archivo}-v${arch.version}.txt`)}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded"
-                          style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#3ecf8e", fontWeight: 600, textDecoration: "none", border: "1px solid rgba(62,207,142,0.2)", background: "rgba(62,207,142,0.05)" }}
+                          style={{ fontFamily: "'Inter', sans-serif", fontSize: "13px", color: "#3ecf8e", fontWeight: 600, border: "1px solid rgba(62,207,142,0.2)", background: "rgba(62,207,142,0.05)", cursor: "pointer" }}
                         >
                           <Download size={12} /> Descargar
-                        </a>
+                        </button>
                       </div>
                     ))}
                   </div>
